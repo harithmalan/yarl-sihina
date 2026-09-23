@@ -24,13 +24,13 @@ const SLIDES = [
   },
   {
     id: 3,
-    image: '/img/hero3.jpg',
+    image: '/img/couple1.jpg',
     tag: 'EXCLUSIVE PAIRING',
     tamilTag: 'ஜோடி தொகுப்பு',
     title: 'Heritage Couple Packages',
     subtitle: 'Matching silhouette pairings with complimentary islandwide shipping across Sri Lanka.',
     cta: 'Shop Couple Sets',
-    target: 'productsSection'
+    target: 'coupleOfferSection'
   },
   {
     id: 4,

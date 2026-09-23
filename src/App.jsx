@@ -21,6 +21,7 @@ import HeroCarousel from './components/HeroCarousel';
 import ProductCard from './components/ProductCard';
 import CartDrawer from './components/CartDrawer';
 import PaymentModal from './components/PaymentModal';
+import CoupleOfferSection from './components/CoupleOfferSection';
 import './App.css';
 
 const ANNOUNCEMENTS = [
@@ -108,15 +109,19 @@ function App() {
     setIsModalOpen(true);
   };
 
-  // Filter products
+  // Filter catalogue products: exclude couple package because it has its own dedicated spotlight section
+  const catalogProducts = useMemo(() => {
+    return products.filter(p => !p.isCouple);
+  }, []);
+
   const filteredProducts = useMemo(() => {
-    return products.filter(product => {
+    return catalogProducts.filter(product => {
       const matchesCategory = activeCategory === 'all' || product.category === activeCategory;
       const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                             product.desc.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
-  }, [activeCategory, searchQuery]);
+  }, [catalogProducts, activeCategory, searchQuery]);
 
   const showHeader = isHeaderVisible || isCartOpen || isMobileMenuOpen;
 
@@ -164,10 +169,10 @@ function App() {
               Crop Tops
             </button>
             <button 
-              className={`nav-item ${activeCategory === 'couple' ? 'active' : ''}`}
-              onClick={() => { setActiveCategory('couple'); document.getElementById('productsSection')?.scrollIntoView({ behavior: 'smooth' }); }}
+              className="nav-item"
+              onClick={() => { document.getElementById('coupleOfferSection')?.scrollIntoView({ behavior: 'smooth' }); }}
             >
-              Couple Sets
+              Couple Sets ✦
             </button>
             <a href="#heritageStory" className="nav-item">
               Our Story
@@ -246,9 +251,9 @@ function App() {
             </button>
             <button 
               className="mobile-nav-link"
-              onClick={() => { setActiveCategory('couple'); setIsMobileMenuOpen(false); document.getElementById('productsSection')?.scrollIntoView({ behavior: 'smooth' }); }}
+              onClick={() => { setIsMobileMenuOpen(false); document.getElementById('coupleOfferSection')?.scrollIntoView({ behavior: 'smooth' }); }}
             >
-              Couple Sets (Free Shipping)
+              Couple Sets (Free Shipping) ✦
             </button>
             <a 
               href="#heritageStory" 
@@ -332,25 +337,19 @@ function App() {
               className={`filter-pill ${activeCategory === 'all' ? 'active' : ''}`}
               onClick={() => setActiveCategory('all')}
             >
-              All Items ({products.length})
+              All Drops ({catalogProducts.length})
             </button>
             <button 
               className={`filter-pill ${activeCategory === 'tshirt' ? 'active' : ''}`}
               onClick={() => setActiveCategory('tshirt')}
             >
-              T-Shirts
+              Heritage T-Shirts
             </button>
             <button 
               className={`filter-pill ${activeCategory === 'crop' ? 'active' : ''}`}
               onClick={() => setActiveCategory('crop')}
             >
               Crop Tops
-            </button>
-            <button 
-              className={`filter-pill ${activeCategory === 'couple' ? 'active' : ''}`}
-              onClick={() => setActiveCategory('couple')}
-            >
-              Couple Packages
             </button>
           </div>
         </div>
@@ -378,6 +377,12 @@ function App() {
           </div>
         )}
       </section>
+
+      {/* 5.5 Highlighted Couple Offer Section */}
+      <CoupleOfferSection 
+        coupleProduct={products.find(p => p.id === 'p1_couple')}
+        onAddToCart={handleAddToCart}
+      />
 
       {/* 6. Editorial Story Banner (Joey Clothing style) */}
       <section className="heritage-story-section" id="heritageStory">
