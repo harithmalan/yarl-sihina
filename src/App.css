@@ -13,8 +13,30 @@
 }
 
 /* --------------------------------------------------------------------------
-   1. Top Announcement Bar
+   1. Site Header Wrapper (Hidden on initial view, smoothly slides in on scroll)
    -------------------------------------------------------------------------- */
+.site-header-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+}
+
+.site-header-wrapper.hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.site-header-wrapper.visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+  box-shadow: 0 4px 20px rgba(22, 35, 42, 0.12);
+}
+
 .top-announcement-bar {
   background-color: var(--palette-dark-slate);
   color: var(--palette-linen);
@@ -332,9 +354,11 @@
 .hero-carousel-container {
   position: relative;
   width: 100%;
-  height: 78vh;
-  min-height: 520px;
-  max-height: 750px;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-height: none;
   overflow: hidden;
   background: var(--palette-dark-slate);
 }
@@ -400,7 +424,7 @@
   padding: 0 24px;
   text-align: center;
   color: #FFFFFF;
-  margin-top: 40px;
+  margin-top: 0;
 }
 
 .hero-pill-badge {
@@ -549,6 +573,51 @@
 .hero-dot.active {
   width: 44px;
   background: var(--palette-caramel);
+}
+
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 22px;
+  right: 32px;
+  z-index: 5;
+  background: rgba(22, 35, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--palette-linen);
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.hero-scroll-indicator:hover {
+  background: var(--palette-caramel);
+  color: #FFFFFF;
+  border-color: var(--palette-caramel);
+  transform: translateY(2px);
+}
+
+.scroll-indicator-icon {
+  animation: bounceDown 1.8s infinite;
+}
+
+@keyframes bounceDown {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(4px);
+  }
+  60% {
+    transform: translateY(2px);
+  }
 }
 
 /* --------------------------------------------------------------------------
@@ -1989,8 +2058,16 @@
   }
 
   .hero-carousel-container {
-    height: 65vh;
-    min-height: 440px;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
+    max-height: none;
+  }
+
+  .hero-scroll-indicator {
+    right: 20px;
+    bottom: 20px;
   }
 
   .hero-nav-arrow {

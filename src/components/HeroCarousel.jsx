@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ArrowUpRight, Sparkles } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowUpRight, Sparkles, ChevronDown } from 'lucide-react';
 
 const SLIDES = [
   {
@@ -155,6 +155,16 @@ export default function HeroCarousel({ onShopClick }) {
           />
         ))}
       </div>
+
+      {/* Scroll Down Indicator */}
+      <button 
+        className="hero-scroll-indicator"
+        onClick={() => document.getElementById('featuresStrip')?.scrollIntoView({ behavior: 'smooth' })}
+        aria-label="Scroll down to explore"
+      >
+        <span className="scroll-indicator-text">EXPLORE</span>
+        <ChevronDown size={16} className="scroll-indicator-icon" />
+      </button>
     </div>
   );
 }

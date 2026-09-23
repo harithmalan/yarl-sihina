@@ -40,12 +40,27 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [announcementIdx, setAnnouncementIdx] = useState(0);
 
+  const [isHeaderVisible, setIsHeaderVisible] = useState(false);
+
   // Rotate announcement bar every 6s
   React.useEffect(() => {
     const timer = setInterval(() => {
       setAnnouncementIdx(prev => (prev + 1) % ANNOUNCEMENTS.length);
     }, 6000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Show header on scroll, hide on top of page
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 60) {
+        setIsHeaderVisible(true);
+      } else {
+        setIsHeaderVisible(false);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const totalCartCount = useMemo(() => {
@@ -103,17 +118,21 @@ function App() {
     });
   }, [activeCategory, searchQuery]);
 
+  const showHeader = isHeaderVisible || isCartOpen || isMobileMenuOpen;
+
   return (
     <div className="joey-storefront-wrapper">
-      {/* 1. Top Announcement Bar */}
-      <div className="top-announcement-bar">
-        <div className="announcement-content">
-          <span>{ANNOUNCEMENTS[announcementIdx]}</span>
+      {/* Top Header Wrapper (Hidden on first look, slides in on scroll) */}
+      <div className={`site-header-wrapper ${showHeader ? 'visible' : 'hidden'}`}>
+        {/* 1. Top Announcement Bar */}
+        <div className="top-announcement-bar">
+          <div className="announcement-content">
+            <span>{ANNOUNCEMENTS[announcementIdx]}</span>
+          </div>
         </div>
-      </div>
 
-      {/* 2. Main Navigation Header */}
-      <header className="main-sticky-header">
+        {/* 2. Main Navigation Header */}
+        <header className="main-sticky-header">
         <div className="header-container">
           {/* Mobile Menu Button */}
           <button 
@@ -241,6 +260,7 @@ function App() {
           </div>
         )}
       </header>
+      </div>
 
       {/* 3. Hero Carousel Banner with Uploaded Images */}
       <HeroCarousel 
@@ -250,7 +270,7 @@ function App() {
       />
 
       {/* 4. Value Highlights Banner (Joey Clothing style) */}
-      <section className="joey-features-strip">
+      <section className="joey-features-strip" id="featuresStrip">
         <div className="features-container">
           <div className="feature-cell">
             <div className="feature-icon-circle">
@@ -417,10 +437,10 @@ function App() {
               <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
               </a>
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook">
+              <a href="https://web.facebook.com/YarlSihina" target="_blank" rel="noreferrer" aria-label="Facebook">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
               </a>
-              <a href="https://wa.me/94770000000" target="_blank" rel="noreferrer" aria-label="WhatsApp">
+              <a href="https://wa.me/+94712599185" target="_blank" rel="noreferrer" aria-label="WhatsApp">
                 <MessageCircle size={18} />
               </a>
             </div>
