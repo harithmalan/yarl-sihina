@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YARL API | Ceylon Heritage Streetwear (யாழ் அபி)</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Serif+Tamil:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    :root {
+      --terracotta-dark: #8b3a1b;
+      --terracotta-main: #b84423;
+      --terracotta-light: #d66a4c;
+      --saffron: #f5a623;
+      --gold-warm: #e8c547;
+      --temple-stone: #d4a574;
+      --ocean-deep: #1a3a52;
+      --cream-warm: #f9f5ef;
+      --charcoal: #1c1815;
+      --dark-accent: #0f0c0a;
+      
+      --text-primary: #2c2419;
+      --text-light: #f5efe6;
+      --text-muted: #8b7b70;
+      
+      --border-subtle: rgba(139, 58, 27, 0.15);
+      --border-accent: rgba(245, 166, 35, 0.3);
+      --glow-terracotta: rgba(184, 68, 35, 0.25);
+      --glow-saffron: rgba(245, 166, 35, 0.2);
+      
+      --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      --transition-quick: all 0.2s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: linear-gradient(135deg, #faf7f2 0%, #f5f0ea 50%, #efe8e0 100%);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Premium Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(252, 250, 247, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 2px solid var(--border-subtle);
+      box-shadow: 0 4px 20px rgba(139, 58, 27, 0.08);
+    }
+
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+    }
+
+    .logo-emblem {
+      width: 52px;
+      height: 52px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--saffron) 0%, var(--terracotta-main) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px var(--glow-terracotta);
+      border: 2px solid var(--gold-warm);
+      font-weight: 900;
+      font-size: 1.4rem;
+      color: white;
+      transition: var(--transition-smooth);
+    }
+
+    .logo-emblem:hover {
+      transform: scale(1.08) translateY(-2px);
+      box-shadow: 0 12px 32px var(--glow-saffron);
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .logo-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: var(--charcoal);
+      letter-spacing: 2px;
+    }
+
+    .logo-subtitle {
+      font-family: 'Noto Serif Tamil', serif;
+      font-size: 0.65rem;
+      color: var(--terracotta-main);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: var(--transition-quick);
+      position: relative;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--terracotta-main);
+      transition: var(--transition-quick);
+    }
+
+    .nav-link:hover {
+      color: var(--terracotta-main);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .cart-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: linear-gradient(135deg, var(--terracotta-main) 0%, var(--terracotta-dark) 100%);
+      color: white;
+      padding: 0.65rem 1.4rem;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 8px 20px var(--glow-terracotta);
+      transition: var(--transition-smooth);
+    }
+
+    .cart-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px var(--glow-terracotta);
+    }
+
+    .cart-count {
+      background: var(--saffron);
+      color: white;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      padding: 6rem 2rem;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--glow-saffron) 0%, transparent 70%);
+      z-index: -1;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      left: -10%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, var(--glow-terracotta) 0%, transparent 70%);
+      z-index: -1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(245, 166, 35, 0.1), rgba(184, 68, 35, 0.1));
+      border: 1.5px solid var(--border-accent);
+      padding: 8px 20px;
+      border-radius: 30px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--terracotta-main);
+      margin-bottom: 2rem;
+      animation: slideDown 0.8s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hero h1 {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      line-height: 1.1;
+      font-weight: 900;
+      margin-bottom: 1.5rem;
+      letter-spacing: -1px;
+      color: var(--charcoal);
+      animation: slideDown 0.8s ease-out 0.1s backwards;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 620px;
+      margin: 0 auto 2.5rem;
+      animation: slideDown 0.8s ease-out 0.2s backwards;
+    }
+
+    .heritage-quote {
+      max-width: 700px;
+      margin: 0 auto 3rem;
+      padding: 2rem 2.5rem;
+      border-left: 4px solid var(--terracotta-main);
+      border-right: 4px solid var(--saffron);
+      background: linear-gradient(135deg, rgba(245, 166, 35, 0.05), rgba(184, 68, 35, 0.05));
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      color: var(--charcoal);
+      position: relative;
+      animation: slideDown 0.8s ease-out 0.3s backwards;
+    }
+
+    .heritage-quote::before,
+    .heritage-quote::after {
+      position: absolute;
+      font-size: 2.5rem;
+      color: var(--saffron);
+      opacity: 0.3;
+    }
+
+    .heritage-quote::before {
+      content: '"';
+      top: -20px;
+      left: 20px;
+    }
+
+    .heritage-quote::after {
+      content: '"';
+      bottom: -20px;
+      right: 20px;
+    }
+
+    .cta-button-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, var(--terracotta-main), var(--terracotta-dark));
+      color: white;
+      padding: 1rem 2.2rem;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 12px 32px var(--glow-terracotta);
+      transition: var(--transition-smooth);
+      text-decoration: none;
+      animation: slideDown 0.8s ease-out 0.4s backwards;
+    }
+
+    .cta-button-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 48px var(--glow-terracotta);
+    }
+
+    /* Features Banner */
+    .features-banner {
+      background: linear-gradient(90deg, rgba(139, 58, 27, 0.08), rgba(245, 166, 35, 0.08));
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 2.5rem;
+      margin: 4rem 0;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      text-align: center;
+    }
+
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--saffron), var(--terracotta-light));
+      border-radius: 12px;
+      color: white;
+    }
+
+    .feature-item h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+
+    .feature-item p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Section Title */
+    .section-title {
+      text-align: center;
+      margin: 4rem 0 3rem;
+    }
+
+    .section-title h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--charcoal);
+      margin-bottom: 0.8rem;
+      letter-spacing: -1px;
+    }
+
+    .section-title .subtitle {
+      font-family: 'Noto Serif Tamil', serif;
+      font-size: 0.85rem;
+      color: var(--terracotta-main);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    /* Products Grid */
+    .products-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2.5rem;
+      margin-bottom: 4rem;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(139, 58, 27, 0.08);
+      transition: var(--transition-smooth);
+      position: relative;
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 48px rgba(139, 58, 27, 0.15);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 320px;
+      background: linear-gradient(135deg, #e8d4b8 0%, #d4a574 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.5);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-image::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), transparent);
+      pointer-events: none;
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: var(--saffron);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 12px rgba(245, 166, 35, 0.3);
+    }
+
+    .product-info {
+      padding: 1.8rem;
+    }
+
+    .product-name {
+      font-family: 'Cinzel', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--charcoal);
+      margin-bottom: 0.6rem;
+      letter-spacing: 0.5px;
+    }
+
+    .product-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+      line-height: 1.5;
+    }
+
+    .product-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .product-price {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--terracotta-main);
+    }
+
+    .add-to-cart-btn {
+      background: linear-gradient(135deg, var(--terracotta-main), var(--terracotta-dark));
+      color: white;
+      border: none;
+      padding: 0.65rem 1.2rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition-quick);
+      box-shadow: 0 4px 12px var(--glow-terracotta);
+    }
+
+    .add-to-cart-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px var(--glow-terracotta);
+    }
+
+    /* Shopping Cart */
+    .cart-section {
+      max-width: 1200px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 3rem;
+    }
+
+    @media (max-width: 900px) {
+      .cart-section {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .cart-items-container {
+      background: white;
+      border-radius: 16px;
+      padding: 2.5rem;
+      box-shadow: 0 8px 24px rgba(139, 58, 27, 0.08);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .cart-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--charcoal);
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid var(--border-subtle);
+    }
+
+    .cart-item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+      transition: var(--transition-quick);
+    }
+
+    .cart-item-row:last-child {
+      border-bottom: none;
+    }
+
+    .cart-item-info strong {
+      display: block;
+      font-size: 1.05rem;
+      color: var(--charcoal);
+      margin-bottom: 0.5rem;
+    }
+
+    .cart-item-details {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 0.8rem;
+    }
+
+    .cart-remove-btn {
+      background: none;
+      border: 1px solid var(--border-accent);
+      color: var(--terracotta-main);
+      padding: 0.45rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition-quick);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .cart-remove-btn:hover {
+      background: rgba(184, 68, 35, 0.1);
+    }
+
+    .cart-price {
+      font-weight: 700;
+      color: var(--terracotta-main);
+      font-size: 1.1rem;
+    }
+
+    /* Checkout Sidebar */
+    .checkout-sidebar {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      height: fit-content;
+      box-shadow: 0 8px 24px rgba(139, 58, 27, 0.08);
+      border: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 100px;
+    }
+
+    .checkout-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--charcoal);
+      margin-bottom: 1.5rem;
+    }
+
+    .calculation-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.8rem 0;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .calculation-row:last-of-type {
+      border-bottom: none;
+    }
+
+    .calculation-label {
+      font-weight: 500;
+    }
+
+    .calculation-value {
+      font-weight: 600;
+      color: var(--charcoal);
+    }
+
+    .discount-row {
+      color: #22c55e;
+    }
+
+    .grand-total-row {
+      padding: 1.2rem 0;
+      font-size: 1.2rem;
+      font-weight: 800;
+      border-top: 2px solid var(--border-subtle);
+      color: var(--charcoal);
+    }
+
+    .form-section {
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--charcoal);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 2px solid var(--border-subtle);
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      transition: var(--transition-quick);
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--terracotta-main);
+      box-shadow: 0 0 0 3px var(--glow-terracotta);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .confirm-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--terracotta-main), var(--terracotta-dark));
+      color: white;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 8px 24px var(--glow-terracotta);
+      transition: var(--transition-smooth);
+      margin-top: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .confirm-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px var(--glow-terracotta);
+    }
+
+    .confirm-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Payment Modal */
+    .payment-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      padding: 3rem;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: modalSlideUp 0.4s ease-out;
+    }
+
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .modal-ref {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--terracotta-main);
+      margin-bottom: 1rem;
+    }
+
+    .modal-subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .modal-amount {
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(245, 166, 35, 0.1), rgba(184, 68, 35, 0.1));
+      border-radius: 16px;
+      margin: 2rem 0;
+    }
+
+    .modal-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-price {
+      font-family: 'Cinzel', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--terracotta-main);
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .btn-whatsapp {
+      flex: 1;
+      background: linear-gradient(135deg, #25d366, #1ea752);
+      color: white;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-whatsapp:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(37, 211, 102, 0.3);
+    }
+
+    .btn-close-modal {
+      flex: 1;
+      background: var(--border-subtle);
+      color: var(--text-primary);
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-close-modal:hover {
+      background: var(--border-accent);
+    }
+
+    /* Empty State */
+    .empty-cart {
+      text-align: center;
+      padding: 3rem 2rem;
+    }
+
+    .empty-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1.5rem;
+      opacity: 0.4;
+    }
+
+    .empty-text {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-bar {
+        padding: 0.8rem 1.2rem;
+      }
+
+      .nav-links {
+        gap: 1.5rem;
+      }
+
+      .hero {
+        padding: 4rem 1.5rem;
+      }
+
+      .logo-title {
+        font-size: 1.1rem;
+      }
+
+      .nav-link {
+        font-size: 0.85rem;
+      }
+
+      .products-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .cart-section {
+        grid-template-columns: 1fr;
+      }
+
+      .checkout-sidebar {
+        position: static;
+      }
+
+      .modal-content {
+        padding: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="nav-bar">
+      <a href="#" class="logo-section">
+        <div class="logo-emblem">✦</div>
+        <div class="logo-text">
+          <div class="logo-title">YARL</div>
+          <div class="logo-subtitle">நாட் அபி</div>
+        </div>
+      </a>
+      
+      <nav class="nav-links">
+        <a href="#" class="nav-link">Collections</a>
+        <a href="#" class="nav-link">Heritage</a>
+        <a href="#" class="nav-link">About</a>
+        <a href="#" class="nav-link">Contact</a>
+        <button class="cart-btn">
+          <i data-lucide="shopping-bag" style="width: 18px; height: 18px;"></i>
+          <span class="cart-count" id="nav-cart-count">0</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-badge">
+      <i data-lucide="zap" style="width: 14px; height: 14px;"></i>
+      Heritage Streetwear Since 2024
+    </div>
+    
+    <h1>Thambapanni Reimagined</h1>
+    <p>Where ancient Tamil heritage meets contemporary street culture. Each piece tells a story of Jaffna's vibrant soul.</p>
+    
+    <div class="heritage-quote">
+      Wear the legacy of our ancestors with pride and revolution.
+    </div>
+    
+    <button class="cta-button-primary">
+      Explore Collection
+      <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+    </button>
+  </section>
+
+  <!-- Features Banner -->
+  <section class="features-banner">
+    <div class="features-grid">
+      <div class="feature-item">
+        <div class="feature-icon">
+          <i data-lucide="truck" style="width: 28px; height: 28px;"></i>
+        </div>
+        <h3>Fast Delivery</h3>
+        <p>Across all of Sri Lanka</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <i data-lucide="shield-check" style="width: 28px; height: 28px;"></i>
+        </div>
+        <h3>Authentic Quality</h3>
+        <p>Certified premium materials</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <i data-lucide="rotate-ccw" style="width: 28px; height: 28px;"></i>
+        </div>
+        <h3>Easy Returns</h3>
+        <p>Hassle-free exchanges</p>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">
+          <i data-lucide="heart" style="width: 28px; height: 28px;"></i>
+        </div>
+        <h3>Heritage Crafted</h3>
+        <p>Traditional meets modern</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section class="products-section">
+    <div class="section-title">
+      <h2>Curated Collection</h2>
+      <div class="subtitle">Discover Our Heritage Line</div>
+    </div>
+    
+    <div class="products-grid" id="productsGrid">
+      <!-- Products populate here -->
+    </div>
+  </section>
+
+  <!-- Shopping Cart & Checkout -->
+  <section class="cart-section" id="cartSection" style="display: none;">
+    <div class="cart-items-container">
+      <div class="cart-title">Your Selections</div>
+      <div id="cartItemList"></div>
+    </div>
+    
+    <div class="checkout-sidebar">
+      <div class="checkout-title">Order Summary</div>
+      
+      <div class="calculation-row">
+        <span class="calculation-label">Total Pieces</span>
+        <span class="calculation-value" id="calc-units">0</span>
+      </div>
+      
+      <div class="calculation-row">
+        <span class="calculation-label">Subtotal</span>
+        <span class="calculation-value" id="calc-subtotal">LKR 0</span>
+      </div>
+      
+      <div class="calculation-row discount-row" id="discount-display-row" style="display: none;">
+        <span class="calculation-label">Bulk Discount (<span id="calc-discount-pct">0</span>%)</span>
+        <span class="calculation-value" id="calc-discount-amt">LKR 0</span>
+      </div>
+      
+      <div class="calculation-row">
+        <span class="calculation-label">Delivery</span>
+        <span class="calculation-value" id="calc-delivery">LKR 150</span>
+      </div>
+      
+      <div class="calculation-row" id="cod-fee-row" style="display: none;">
+        <span class="calculation-label">COD Fee</span>
+        <span class="calculation-value">LKR 200</span>
+      </div>
+      
+      <div class="calculation-row grand-total-row">
+        <span>Grand Total</span>
+        <span id="calc-grand-total">LKR 0</span>
+      </div>
+      
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" id="custName" class="form-input" placeholder="Your name">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">WhatsApp Number</label>
+          <input type="tel" id="custPhone" class="form-input" placeholder="+94 xxx xxx xxxx">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Delivery Address</label>
+          <textarea id="custAddress" class="form-textarea" placeholder="Full address with postal code"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Email (Optional)</label>
+          <input type="email" id="custEmail" class="form-input" placeholder="your@email.com">
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Special Notes</label>
+          <textarea id="custNotes" class="form-textarea" placeholder="Any special requests?"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-weight: 500;">
+            <input type="checkbox" id="codCheckbox" onchange="renderCheckoutMath()">
+            Cash on Delivery (+LKR 200)
+          </label>
+        </div>
+      </div>
+      
+      <button id="confirmOrderBtn" class="confirm-btn" onclick="initiateOrder()">
+        Proceed to Payment
+      </button>
+      
+      <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
+        <p>✓ Secure WhatsApp checkout<br>✓ LKR 500/piece advance payment</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Payment Modal -->
+  <div id="paymentModal" class="payment-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-subtitle">ORDER REFERENCE</div>
+        <div class="modal-ref" id="modal-ref-id">#YA-000000</div>
+        <p style="color: var(--text-muted); margin-top: 1rem;">Secure payment through WhatsApp</p>
+      </div>
+      
+      <div class="modal-amount">
+        <div class="modal-label">Advance Payment Required</div>
+        <div class="modal-price" id="modal-advance-amount">LKR 0</div>
+        <div style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;" id="modal-balance-text"></div>
+      </div>
+      
+      <div class="modal-buttons">
+        <button class="btn-whatsapp" onclick="sendToWhatsApp()">
+          <i data-lucide="send" style="width: 18px; height: 18px;"></i>
+          Send via WhatsApp
+        </button>
+        <button class="btn-close-modal" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const products = [
+      { id: '1', name: 'Heritage Tee Classic', price: 2500, desc: 'Premium cotton blend with traditional motif', isCouple: false, totalItemsCount: 1 },
+      { id: '2', name: 'Jaffna Collective Hoodie', price: 4500, desc: 'Comfort meets culture', isCouple: false, totalItemsCount: 1 },
+      { id: '3', name: 'Thambapanni Couple Set', price: 7500, desc: 'Perfect for two', isCouple: true, totalItemsCount: 2 },
+      { id: '4', name: 'Temple Street Jacket', price: 6200, desc: 'Structured elegance', isCouple: false, totalItemsCount: 1 },
+      { id: '5', name: 'Colonial Collar Shirt', price: 3800, desc: 'Timeless sophistication', isCouple: false, totalItemsCount: 1 },
+      { id: '6', name: 'Sunset Gradient Sweatshirt', price: 4800, desc: 'Inspired by Jaffna sunsets', isCouple: false, totalItemsCount: 1 },
+    ];
+
+    let cart = [];
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = products.map(p => `
+        <div class="product-card">
+          <div class="product-image">
+            <i data-lucide="image" style="width: 80px; height: 80px;"></i>
+            ${p.isCouple ? '<span class="product-badge">Couple Set</span>' : ''}
+          </div>
+          <div class="product-info">
+            <div class="product-name">${p.name}</div>
+            <div class="product-desc">${p.desc}</div>
+            <div class="product-footer">
+              <div class="product-price">LKR ${p.price}</div>
+              <button class="add-to-cart-btn" onclick="addToCart('${p.id}')">
+                <i data-lucide="plus" style="width: 14px; height: 14px;"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      const existing = cart.find(c => c.id === id);
+
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({ ...product, qty: 1, size: 'M' });
+      }
+
+      document.getElementById('cartSection').style.display = 'grid';
+      renderCartUI();
+      window.scrollTo({ top: document.getElementById('cartSection').offsetTop - 100, behavior: 'smooth' });
+    }
+
+    function removeFromCart(id) {
+      cart = cart.filter(item => item.id !== id);
+      renderCartUI();
+      if (cart.length === 0) {
+        document.getElementById('cartSection').style.display = 'none';
+      }
+    }
+
+    function calculateFullOrder() {
+      let subtotal = 0;
+      let totalPieces = 0;
+      let hasCoupleOrder = false;
+
+      cart.forEach(item => {
+        subtotal += (item.price * item.qty);
+        totalPieces += item.totalItemsCount * item.qty;
+        if (item.isCouple) hasCoupleOrder = true;
+      });
+
+      let discountPct = 0;
+      if (totalPieces >= 25) discountPct = 0.20;
+      else if (totalPieces >= 16) discountPct = 0.15;
+      else if (totalPieces >= 10) discountPct = 0.10;
+
+      const discountAmount = Math.round(subtotal * discountPct);
+      const discountedSubtotal = subtotal - discountAmount;
+
+      let deliveryFee = 0;
+      if (totalPieces > 0) {
+        if (hasCoupleOrder || totalPieces >= 10) deliveryFee = 0;
+        else deliveryFee = 150;
+      }
+
+      const codChecked = document.getElementById('codCheckbox') ? document.getElementById('codCheckbox').checked : false;
+      const codFee = (codChecked && totalPieces > 0) ? 200 : 0;
+
+      const grandTotal = discountedSubtotal + deliveryFee + codFee;
+      const requiredAdvance = totalPieces * 500;
+      const remainingBalance = Math.max(0, grandTotal - requiredAdvance);
+
+      return { totalPieces, subtotal, discountPct, discountAmount, discountedSubtotal, deliveryFee, hasFreeDelivery: (deliveryFee === 0 && totalPieces > 0), codChecked, codFee, grandTotal, requiredAdvance, remainingBalance };
+    }
+
+    function renderCartUI() {
+      const container = document.getElementById('cartItemList');
+      const navCount = document.getElementById('nav-cart-count');
+      const confirmBtn = document.getElementById('confirmOrderBtn');
+
+      if (cart.length === 0) {
+        container.innerHTML = '<div class="empty-cart"><i data-lucide="package-open" class="empty-icon"></i><p class="empty-text">Your collection is empty. Explore our heritage pieces.</p></div>';
+        navCount.innerText = '0';
+        confirmBtn.disabled = true;
+        lucide.createIcons();
+        renderCheckoutMath();
+        return;
+      }
+
+      confirmBtn.disabled = false;
+      let totalPiecesCount = 0;
+
+      container.innerHTML = cart.map(item => {
+        totalPiecesCount += item.totalItemsCount * item.qty;
+        return `
+          <div class="cart-item-row">
+            <div class="cart-item-info">
+              <strong>${item.name}</strong>
+              <div class="cart-item-details">Size: ${item.size} × ${item.qty} Qty</div>
+              <button class="cart-remove-btn" onclick="removeFromCart('${item.id}')">
+                <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i> Remove
+              </button>
+            </div>
+            <div class="cart-price">LKR ${(item.price * item.qty).toLocaleString()}</div>
+          </div>
+        `;
+      }).join('');
+
+      navCount.innerText = totalPiecesCount;
+      lucide.createIcons();
+      renderCheckoutMath();
+    }
+
+    function renderCheckoutMath() {
+      const math = calculateFullOrder();
+
+      document.getElementById('calc-units').innerText = math.totalPieces;
+      document.getElementById('calc-subtotal').innerText = `LKR ${math.subtotal.toLocaleString()}`;
+      
+      const discRow = document.getElementById('discount-display-row');
+      if (math.discountAmount > 0) {
+        discRow.style.display = 'flex';
+        document.getElementById('calc-discount-pct').innerText = `${Math.round(math.discountPct * 100)}%`;
+        document.getElementById('calc-discount-amt').innerText = `- LKR ${math.discountAmount.toLocaleString()}`;
+      } else {
+        discRow.style.display = 'none';
+      }
+
+      const deliveryElem = document.getElementById('calc-delivery');
+      if (math.hasFreeDelivery) {
+        deliveryElem.innerHTML = `<span style="color: #22c55e; font-weight: bold;">FREE</span>`;
+      } else {
+        deliveryElem.innerText = `LKR ${math.deliveryFee}`;
+      }
+
+      const codRow = document.getElementById('cod-fee-row');
+      if (math.codChecked && math.totalPieces > 0) {
+        codRow.style.display = 'flex';
+      } else {
+        codRow.style.display = 'none';
+      }
+
+      document.getElementById('calc-grand-total').innerText = `LKR ${math.grandTotal.toLocaleString()}`;
+    }
+
+    let activeOrderData = null;
+
+    function initiateOrder() {
+      if (cart.length === 0) {
+        alert("Please add at least one garment to your collection.");
+        return;
+      }
+
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const address = document.getElementById('custAddress').value.trim();
+      const email = document.getElementById('custEmail').value.trim();
+      const notes = document.getElementById('custNotes').value.trim();
+
+      if (!name || !phone || !address) {
+        alert("Please complete the required fields.");
+        return;
+      }
+
+      const math = calculateFullOrder();
+      const orderRef = 'YA-' + Math.floor(100000 + Math.random() * 900000);
+
+      activeOrderData = {
+        ref: orderRef,
+        name, phone, address, email, notes,
+        math,
+        cartItems: [...cart]
+      };
+
+      document.getElementById('modal-ref-id').innerText = `#${orderRef}`;
+      document.getElementById('modal-advance-amount').innerText = `LKR ${math.requiredAdvance.toLocaleString()}`;
+      document.getElementById('modal-balance-text').innerText = `Remaining balance due: LKR ${math.remainingBalance.toLocaleString()}`;
+
+      document.getElementById('paymentModal').style.display = 'flex';
+      lucide.createIcons();
+    }
+
+    function closeModal() {
+      document.getElementById('paymentModal').style.display = 'none';
+    }
+
+    function sendToWhatsApp() {
+      if (!activeOrderData) return;
+
+      const d = activeOrderData;
+      let msg = `*🎨 YARL HERITAGE ORDER CONFIRMATION*%0A`;
+      msg += `*Reference:* ${d.ref}%0A`;
+      msg += `%0A*━━━━━━━━━━━━━━━━━━*%0A`;
+      msg += `*CUSTOMER DETAILS*%0A*Name:* ${d.name}%0A*Contact:* ${d.phone}%0A*Address:* ${d.address}%0A`;
+      if (d.notes) msg += `*Notes:* ${d.notes}%0A`;
+      msg += `%0A*━━━━━━━━━━━━━━━━━━*%0A*ITEMS ORDERED*%0A`;
+
+      d.cartItems.forEach(i => {
+        msg += `✦ ${i.name} (${i.size}) × ${i.qty} = LKR ${(i.price * i.qty).toLocaleString()}%0A`;
+      });
+
+      msg += `%0A*━━━━━━━━━━━━━━━━━━*%0A`;
+      msg += `*PRICE BREAKDOWN*%0A`;
+      msg += `Subtotal: LKR ${d.math.subtotal.toLocaleString()}%0A`;
+      if (d.math.discountAmount > 0) {
+        msg += `Bulk Discount (${Math.round(d.math.discountPct*100)}%): -LKR ${d.math.discountAmount.toLocaleString()}%0A`;
+      }
+      msg += `Delivery: ${d.math.hasFreeDelivery ? 'FREE ✓' : 'LKR ' + d.math.deliveryFee}%0A`;
+      if (d.math.codChecked) msg += `COD Fee: LKR 200%0A`;
+      msg += `%0A*TOTAL: LKR ${d.math.grandTotal.toLocaleString()}*%0A`;
+      msg += `*Advance (500/piece): LKR ${d.math.requiredAdvance.toLocaleString()}*%0A`;
+      msg += `Balance Due: LKR ${d.math.remainingBalance.toLocaleString()}%0A`;
+      msg += `%0A*━━━━━━━━━━━━━━━━━━*%0A`;
+      msg += `I'm placing this order and will send my advance payment receipt.%0A`;
+      msg += `Thank you for supporting YARL Heritage! 🙏`;
+
+      const whatsappURL = `https://wa.me/94770000000?text=${msg}`;
+      window.open(whatsappURL, '_blank');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderProducts();
+      renderCartUI();
+    });
+  </script>
+</body>
+</html>
