@@ -26,7 +26,7 @@ import './App.css';
 const ANNOUNCEMENTS = [
   '✨ FREE Islandwide Delivery on all Couple Sets & orders of 10+ pieces',
   '🇱🇰 Islandwide Cash on Delivery available across Sri Lanka',
-  '✦ YARL Heritage Drop · Heavyweight Combed Cotton Streetwear'
+  '✦ YARL SIHINA (யாழ் சிஹினா) · Heavyweight Combed Cotton Streetwear'
 ];
 
 function App() {
@@ -157,10 +157,12 @@ function App() {
 
           {/* Brand Logo */}
           <a href="#" className="brand-logo-section">
-            <img src="/img/logo.png" alt="YARL Logo" className="brand-logo-img" />
+            <img src="/img/logo.png" alt="YARL SIHINA Logo" className="brand-logo-img" />
             <div className="brand-logo-titles">
-              <span className="brand-main-title">YARL</span>
-              <span className="brand-sub-title">யாழ் அபி · CEYLON</span>
+              <span className="brand-main-title">YARL SIHINA</span>
+              <span className="brand-sub-title">
+                <span className="tamil-calligraphy-brand">யாழ் சிஹினா</span> · CEYLON
+              </span>
             </div>
           </a>
 
@@ -297,6 +299,9 @@ function App() {
         <div className="section-head-wrap">
           <span className="section-tag-kicker">CURATED COLLECTION</span>
           <h2 className="section-main-heading">The Heritage Catalogue</h2>
+          <span className="tamil-calligraphy-sub" style={{ fontSize: '1.05rem', color: 'var(--palette-caramel)', marginBottom: '8px' }}>
+            பாரம்பரிய ஆடைத் தொகுப்பு
+          </span>
           <p className="section-sub-copy">
             Each silhouette embodies timeless island storytelling, crafted for effortless tropical comfort.
           </p>
@@ -358,7 +363,7 @@ function App() {
       <section className="heritage-story-section" id="heritageStory">
         <div className="story-container">
           <div className="story-text-column">
-            <span className="story-kicker">OUR ETHOS · யாழ் அபி</span>
+            <span className="story-kicker">OUR ETHOS · <span className="tamil-calligraphy-flair">யாழ் சிஹினா</span></span>
             <h2 className="story-heading">Rooted In Jaffna, Crafted For The Modern World</h2>
             <p className="story-p">
               YARL SIHINA was born from a desire to merge ancient Tamil heritage with contemporary street culture. 
@@ -389,7 +394,7 @@ function App() {
             <div className="story-image-card">
               <img src="/img/Hero2.jpg" alt="Craftsmanship and Heritage" className="story-image" />
               <div className="story-image-badge">
-                <span>Authentic Sri Lankan Heritage</span>
+                <span><span className="tamil-calligraphy-brand" style={{ color: '#FFFFFF', marginRight: '6px' }}>ஈழம் பாரம்பரியம்</span> · Authentic Ceylon Heritage</span>
               </div>
             </div>
           </div>
@@ -402,8 +407,8 @@ function App() {
           {/* Brand Info */}
           <div className="footer-col brand-col">
             <div className="footer-brand-logo">
-              <img src="/img/logo.png" alt="YARL" className="footer-logo-img" />
-              <span className="footer-brand-title">YARL</span>
+              <img src="/img/logo.png" alt="YARL SIHINA" className="footer-logo-img" />
+              <span className="footer-brand-title">YARL SIHINA</span>
             </div>
             <p className="footer-desc">
               Ceylon Heritage Streetwear. Merging cultural memory with elevated urban essentials across Sri Lanka.
@@ -449,7 +454,7 @@ function App() {
             <p className="footer-newsletter-text">
               Subscribe to get notified first when limited heritage collections and couple packages are released.
             </p>
-            <form className="footer-newsletter-form" onSubmit={(e) => { e.preventDefault(); alert("Thank you for joining the YARL Heritage Circle!"); }}>
+            <form className="footer-newsletter-form" onSubmit={(e) => { e.preventDefault(); alert("Thank you for joining the YARL SIHINA Heritage Circle!"); }}>
               <input type="email" placeholder="Enter your email" required />
               <button type="submit" aria-label="Subscribe">
                 <ArrowRight size={16} />
@@ -460,7 +465,7 @@ function App() {
 
         <div className="footer-bottom-bar">
           <div className="footer-bottom-container">
-            <p>© {new Date().getFullYear()} YARL (யாழ் அபி). All Rights Reserved. Inspired by Ceylon Heritage.</p>
+            <p>© {new Date().getFullYear()} YARL SIHINA (<span className="tamil-calligraphy">யாழ் சிஹினா</span>). All Rights Reserved. Inspired by Ceylon Heritage.</p>
             <div className="footer-payment-methods">
               <span>Bank Transfer</span>
               <span>Frimi</span>

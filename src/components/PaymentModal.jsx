@@ -7,7 +7,7 @@ export default function PaymentModal({ isOpen, onClose, orderData }) {
   const { ref, customer, math, cartItems } = orderData;
 
   const sendToWhatsApp = () => {
-    let msg = `*🎨 YARL HERITAGE ORDER CONFIRMATION*%0A`;
+    let msg = `*🎨 YARL SIHINA ORDER CONFIRMATION*%0A`;
     msg += `*Order Ref:* #${ref}%0A`;
     msg += `*━━━━━━━━━━━━━━━━━━*%0A`;
     msg += `*CUSTOMER DETAILS*%0A`;
@@ -34,7 +34,7 @@ export default function PaymentModal({ isOpen, onClose, orderData }) {
     msg += `*Advance To Pay (LKR 500/piece): LKR ${math.requiredAdvance.toLocaleString()}*%0A`;
     msg += `Balance on Delivery: LKR ${math.remainingBalance.toLocaleString()}%0A`;
     msg += `*━━━━━━━━━━━━━━━━━━*%0A`;
-    msg += `Hello! I would like to confirm my YARL order #${ref}. Please share bank details to transfer the advance of LKR ${math.requiredAdvance.toLocaleString()}. Thank you!`;
+    msg += `Hello! I would like to confirm my YARL SIHINA order #${ref}. Please share bank details to transfer the advance of LKR ${math.requiredAdvance.toLocaleString()}. Thank you!`;
 
     const whatsappURL = `https://wa.me/94770000000?text=${msg}`;
     window.open(whatsappURL, '_blank');

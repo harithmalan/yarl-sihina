@@ -5,7 +5,8 @@ const SLIDES = [
   {
     id: 1,
     image: '/img/Hero1.jpg',
-    tag: 'NEW ARRIVALS · 2026',
+    tag: 'NEW ARRIVALS 2026',
+    tamilTag: 'யாழ் சிஹினா',
     title: 'Heritage Streetwear Reimagined',
     subtitle: 'Where ancient Tamil craftsmanship meets contemporary urban luxury.',
     cta: 'Explore Collection',
@@ -15,6 +16,7 @@ const SLIDES = [
     id: 2,
     image: '/img/Hero2.jpg',
     tag: 'SIGNATURE DROP',
+    tamilTag: 'பாரம்பரிய ஆடை',
     title: 'Crafted For Island Life',
     subtitle: 'Ultra-breathable combed cotton tailored for everyday style and modern expression.',
     cta: 'Shop T-Shirts',
@@ -24,6 +26,7 @@ const SLIDES = [
     id: 3,
     image: '/img/hero3.jpg',
     tag: 'EXCLUSIVE PAIRING',
+    tamilTag: 'ஜோடி தொகுப்பு',
     title: 'Heritage Couple Packages',
     subtitle: 'Matching silhouette pairings with complimentary islandwide shipping across Sri Lanka.',
     cta: 'Shop Couple Sets',
@@ -33,6 +36,7 @@ const SLIDES = [
     id: 4,
     image: '/img/hero4.jpg',
     tag: 'EDITORIAL LOOKBOOK',
+    tamilTag: 'ஈழத்து கலை',
     title: 'Rooted In Jaffna Soul',
     subtitle: 'Bold motifs inspired by Thambapanni terracotta, architecture, and golden sunsets.',
     cta: 'View Drop',
@@ -92,6 +96,14 @@ export default function HeroCarousel({ onShopClick }) {
               <div className="hero-pill-badge">
                 <Sparkles size={13} className="hero-pill-icon" />
                 <span>{slide.tag}</span>
+                {slide.tamilTag && (
+                  <>
+                    <span style={{ opacity: 0.5, margin: '0 4px' }}>·</span>
+                    <span className="tamil-calligraphy-flair" style={{ fontSize: '0.92rem', color: 'var(--palette-linen)' }}>
+                      {slide.tamilTag}
+                    </span>
+                  </>
+                )}
               </div>
               <h1 className="hero-slide-title">{slide.title}</h1>
               <p className="hero-slide-desc">{slide.subtitle}</p>

@@ -159,11 +159,46 @@
 }
 
 .brand-sub-title {
-  font-size: 0.65rem;
-  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
   font-weight: 600;
   color: var(--palette-caramel);
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tamil-calligraphy-brand {
+  font-family: 'Kavivanar', 'Arima', cursive, serif;
+  font-size: 0.96rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--palette-caramel);
+  text-transform: none;
+  display: inline-block;
+  line-height: 1;
+}
+
+.tamil-calligraphy-flair {
+  font-family: 'Kavivanar', 'Arima', cursive, serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--palette-caramel);
+  text-transform: none;
+  display: inline-block;
+  transform: skewX(-2deg);
+}
+
+.tamil-calligraphy-sub {
+  font-family: 'Kavivanar', 'Arima', cursive, serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--palette-taupe);
+  display: block;
+  margin-top: 4px;
 }
 
 /* Right Header Actions */
