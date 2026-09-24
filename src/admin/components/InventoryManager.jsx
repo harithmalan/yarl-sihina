@@ -59,10 +59,10 @@ export default function InventoryManager() {
   return (
     <div className="inventory-management-panel">
       {/* Header Info */}
-      <div className="inventory-header-bar">
+      <div className="admin-page-hero">
         <div>
-          <h2 className="admin-section-title">Product Catalog & Size Matrix</h2>
-          <p className="admin-section-subtitle">
+          <h1 className="admin-page-title">Product Catalog & Size Matrix</h1>
+          <p className="admin-page-subtitle">
             Manage live warehouse inventory for individual Ceylon pieces and bundled couple sets.
           </p>
         </div>
@@ -86,10 +86,10 @@ export default function InventoryManager() {
           return (
             <div key={product.id} className="inventory-card">
               <div className="inv-card-top">
-                <img src={product.image} alt={product.title} className="inv-product-thumb" />
+                <img src={product.image} alt={product.name || product.title} className="inv-product-thumb" />
                 <div className="inv-product-info">
                   <div className="inv-cat-tag">{product.category.toUpperCase()}</div>
-                  <h3 className="inv-title">{product.title}</h3>
+                  <h3 className="inv-title">{product.name || product.title}</h3>
                   <div className="inv-price">LKR {product.price.toLocaleString()}</div>
                   <div className="inv-stock-pill">
                     {totalUnits === 0 ? (

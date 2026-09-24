@@ -3,16 +3,19 @@
    Curated Palette: #16232A, #3D4D55, #B58863, #D3C3B9, #1B1B1B
    ================================================================ */
 
-:root {
-  --admin-bg: var(--bg-primary, #FAF8F5);
-  --admin-card-bg: var(--bg-surface, #FFFFFF);
-  --admin-card-inner: var(--bg-sand, #F5EFEB);
-  --admin-border: var(--border-subtle, #E8E2DC);
-  --admin-border-focus: var(--accent-caramel, #B58863);
-  --admin-text-main: var(--text-dark, #1B1B1B);
-  --admin-text-muted: var(--text-muted, #7A7270);
-  --admin-caramel: var(--accent-caramel, #B58863);
-  --admin-caramel-hover: var(--accent-caramel-hover, #9E7351);
+:root,
+.admin-app-root,
+.admin-login-screen,
+.admin-modal-backdrop {
+  --admin-bg: #0E161B;
+  --admin-card-bg: #16232A;
+  --admin-card-inner: #1D2B33;
+  --admin-border: rgba(211, 195, 185, 0.15);
+  --admin-border-focus: #B58863;
+  --admin-text-main: #FAF8F5;
+  --admin-text-muted: #9AA7AF;
+  --admin-caramel: #B58863;
+  --admin-caramel-hover: #D4A373;
   --admin-success: #2ECC71;
   --admin-warning: #F39C12;
   --admin-danger: #E74C3C;
@@ -25,6 +28,13 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   display: flex;
   flex-direction: column;
+}
+
+.admin-app-root h1,
+.admin-app-root h2,
+.admin-app-root h3,
+.admin-app-root h4 {
+  color: #fff;
 }
 
 /* -------------------------------------------------------------
@@ -61,7 +71,7 @@
   font-weight: 800;
   font-size: 1.15rem;
   letter-spacing: 0.12em;
-  color: var(--admin-text-main);
+  color: #FFFFFF;
 }
 
 .admin-brand-logo .brand-badge {
@@ -189,8 +199,9 @@
 }
 
 .admin-storefront-btn:hover {
-  background: rgba(181, 136, 99, 0.15);
+  background: rgba(181, 136, 99, 0.2);
   border-color: var(--admin-caramel);
+  color: #fff;
 }
 
 /* -------------------------------------------------------------
@@ -289,11 +300,13 @@
 
 .order-tab-btn:hover {
   color: #fff;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .order-tab-btn.active {
   background: var(--admin-card-inner);
   color: #fff;
+  border: 1px solid var(--admin-border);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -320,6 +333,11 @@
   border-radius: 8px;
   outline: none;
   transition: border-color 0.2s ease;
+}
+
+.orders-search-input::placeholder {
+  color: var(--admin-text-muted);
+  opacity: 0.7;
 }
 
 .orders-search-input:focus {
@@ -356,6 +374,54 @@
   padding: 14px 16px;
   border-bottom: 1px solid rgba(211, 195, 185, 0.08);
   vertical-align: middle;
+  color: var(--admin-text-main);
+}
+
+.admin-app-root .text-muted,
+.admin-modal-backdrop .text-muted,
+.admin-login-screen .text-muted {
+  color: var(--admin-text-muted) !important;
+}
+
+.admin-app-root .text-xs {
+  font-size: 0.75rem;
+}
+
+.admin-app-root .text-success,
+.admin-modal-backdrop .text-success {
+  color: var(--admin-success) !important;
+}
+
+.admin-app-root .text-warning,
+.admin-modal-backdrop .text-warning {
+  color: var(--admin-warning) !important;
+}
+
+.admin-app-root .text-danger,
+.admin-modal-backdrop .text-danger {
+  color: var(--admin-danger) !important;
+}
+
+.admin-app-root .text-caramel,
+.admin-login-screen .text-caramel {
+  color: var(--admin-caramel) !important;
+}
+
+.empty-orders-cell {
+  text-align: center;
+  padding: 40px 16px !important;
+  color: var(--admin-text-muted) !important;
+  font-size: 0.9rem;
+}
+
+.all-clear-state {
+  text-align: center;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--admin-text-muted);
 }
 
 .admin-order-row:hover {
@@ -390,11 +456,13 @@
 
 .city-tag {
   display: inline-block;
-  background: rgba(211, 195, 185, 0.1);
-  padding: 2px 6px;
+  background: rgba(211, 195, 185, 0.12);
+  border: 1px solid rgba(211, 195, 185, 0.2);
+  padding: 2px 8px;
   border-radius: 4px;
   font-size: 0.75rem;
-  color: #fff;
+  font-weight: 500;
+  color: #D3C3B9;
   margin-bottom: 2px;
 }
 
@@ -409,7 +477,7 @@
   align-items: center;
   gap: 6px;
   margin-bottom: 3px;
-  color: #ECE7E1;
+  color: #FAF8F5;
 }
 
 .item-size-pill {
@@ -603,6 +671,56 @@
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+.shipping-modal {
+  max-width: 520px;
+}
+
+.shipping-modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.shipping-subtitle {
+  font-size: 0.88rem;
+  color: var(--admin-text-muted);
+  line-height: 1.5;
+}
+
+.shipping-subtitle strong {
+  color: #fff;
+}
+
+.shipping-summary-box {
+  background: var(--admin-card-inner);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.ship-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--admin-text-muted);
+}
+
+.ship-row strong {
+  color: var(--admin-caramel);
+  font-size: 1rem;
+}
+
+.shipping-actions {
+  display: flex;
+  margin-top: 8px;
+}
+
+.shipping-actions .admin-btn {
+  width: 100%;
 }
 
 .admin-modal-header {
@@ -1029,9 +1147,29 @@
 /* -------------------------------------------------------------
    Inventory Styles
 ---------------------------------------------------------------- */
+.inventory-header-bar {
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px 0;
+}
+
+.admin-section-subtitle {
+  color: var(--admin-text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
 .inventory-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   gap: 20px;
 }
 
@@ -1040,6 +1178,7 @@
   border: 1px solid var(--admin-border);
   border-radius: 10px;
   padding: 18px;
+  overflow: hidden;
 }
 
 .inv-card-top {
@@ -1054,6 +1193,12 @@
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid var(--admin-border);
+  flex-shrink: 0;
+}
+
+.inv-product-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .inv-cat-tag {
@@ -1068,6 +1213,9 @@
   font-weight: 700;
   color: #fff;
   margin: 2px 0 4px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .inv-price {
@@ -1076,21 +1224,62 @@
   color: var(--admin-text-muted);
 }
 
+.stock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  margin-top: 6px;
+}
+
+.stock-badge.badge-ok {
+  background: rgba(46, 204, 113, 0.15);
+  color: #2ECC71;
+  border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.stock-badge.badge-low {
+  background: rgba(243, 156, 18, 0.15);
+  color: #F39C12;
+  border: 1px solid rgba(243, 156, 18, 0.3);
+}
+
+.stock-badge.badge-out {
+  background: rgba(231, 76, 60, 0.15);
+  color: #E74C3C;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.matrix-title {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--admin-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
 .size-matrix-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+  width: 100%;
 }
 
 .matrix-size-cell {
   background: var(--admin-card-inner);
   border: 1px solid var(--admin-border);
   border-radius: 6px;
-  padding: 8px 4px;
+  padding: 8px 2px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 0;
 }
 
 .cell-size-label {
@@ -1108,25 +1297,41 @@
 
 .cell-steppers {
   display: flex;
-  gap: 4px;
+  gap: 3px;
+  justify-content: center;
+  width: 100%;
 }
 
 .cell-step-btn {
   background: rgba(255, 255, 255, 0.08);
   border: none;
   color: var(--admin-text-muted);
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   border-radius: 3px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .cell-step-btn:hover {
   background: var(--admin-caramel);
   color: #fff;
+}
+
+.cell-step-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.adv-amount-tag {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--admin-success);
+  margin-bottom: 4px;
 }
 
 .couple-inventory-notice {
