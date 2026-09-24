@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Package, 
   Layers, 
@@ -9,9 +9,18 @@ import {
   Sparkles,
   Link2
 } from 'lucide-react';
-import { products as initialProducts } from '../../data';
+import { productService } from '../../lib/productService';
 
 export default function InventoryManager() {
+  const [products, setProducts] = useState(() => productService.getProducts());
+
+  useEffect(() => {
+    const unsubscribe = productService.subscribe(updated => {
+      setProducts(updated);
+    });
+    return unsubscribe;
+  }, []);
+
   const [stockData, setStockData] = useState(() => {
     try {
       const saved = localStorage.getItem('yarl_inventory_stock');
@@ -20,7 +29,8 @@ export default function InventoryManager() {
 
     // Default stock matrix
     const matrix = {};
-    initialProducts.forEach(p => {
+    const prods = productService.getProducts();
+    prods.forEach(p => {
       matrix[p.id] = {
         XS: 12,
         S: 25,
@@ -79,7 +89,7 @@ export default function InventoryManager() {
 
       {/* Product Cards Grid */}
       <div className="inventory-grid">
-        {initialProducts.map(product => {
+        {products.map(product => {
           const totalUnits = getTotalStock(product.id);
           const isLowStock = totalUnits < 30;
 

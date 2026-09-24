@@ -20,7 +20,7 @@ import {
   Lock, 
   ExternalLink 
 } from 'lucide-react';
-import { products } from './data';
+import { productService } from './lib/productService';
 import HeroCarousel from './components/HeroCarousel';
 import ProductCard from './components/ProductCard';
 import CartDrawer from './components/CartDrawer';
@@ -60,6 +60,15 @@ function StorefrontApp() {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [announcementIdx, setAnnouncementIdx] = useState(0);
   const [isHeaderVisible, setIsHeaderVisible] = useState(false);
+  const [productsList, setProductsList] = useState(() => productService.getProducts());
+
+  // Listen to product updates (add/delete from admin)
+  useEffect(() => {
+    const unsubscribe = productService.subscribe(updated => {
+      setProductsList(updated);
+    });
+    return unsubscribe;
+  }, []);
 
   // Sync hash routing
   useEffect(() => {
@@ -165,8 +174,8 @@ function StorefrontApp() {
 
   // Filter catalogue products: exclude couple package because it has its own dedicated spotlight section
   const catalogProducts = useMemo(() => {
-    return products.filter(p => !p.isCouple);
-  }, []);
+    return productsList.filter(p => !p.isCouple);
+  }, [productsList]);
 
   const filteredProducts = useMemo(() => {
     return catalogProducts.filter(product => {

@@ -10,7 +10,8 @@ import {
   Database, 
   Lock, 
   LogOut,
-  ExternalLink
+  ExternalLink,
+  Shirt
 } from 'lucide-react';
 import { orderService } from '../lib/orderService';
 import { isSupabaseConfigured } from '../lib/supabaseClient';
@@ -18,6 +19,7 @@ import SlipVerificationModal from './components/SlipVerificationModal';
 import OrderManagement from './components/OrderManagement';
 import InventoryManager from './components/InventoryManager';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
+import ProductManager from './components/ProductManager';
 import './Admin.css';
 
 export default function AdminApp({ onExitAdmin }) {
@@ -163,6 +165,15 @@ export default function AdminApp({ onExitAdmin }) {
 
           <button 
             type="button" 
+            className={`admin-nav-item ${activeTab === 'products' ? 'active' : ''}`}
+            onClick={() => setActiveTab('products')}
+          >
+            <Shirt size={16} />
+            <span>Products & Drops</span>
+          </button>
+
+          <button 
+            type="button" 
             className={`admin-nav-item ${activeTab === 'inventory' ? 'active' : ''}`}
             onClick={() => setActiveTab('inventory')}
           >
@@ -261,6 +272,13 @@ export default function AdminApp({ onExitAdmin }) {
         {activeTab === 'inventory' && (
           <div className="admin-tab-content">
             <InventoryManager />
+          </div>
+        )}
+
+        {/* TAB: Manage Products & Drops */}
+        {activeTab === 'products' && (
+          <div className="admin-tab-content">
+            <ProductManager />
           </div>
         )}
 
