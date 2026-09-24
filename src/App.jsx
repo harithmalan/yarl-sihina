@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   ShoppingBag, 
   Search, 
@@ -11,10 +11,14 @@ import {
   Sparkles, 
   RotateCcw, 
   Check, 
-  MessageCircle,
-  ChevronDown,
-  Globe,
-  Share2
+  MessageCircle, 
+  ChevronDown, 
+  Globe, 
+  Share2, 
+  User, 
+  LogOut, 
+  Lock, 
+  ExternalLink 
 } from 'lucide-react';
 import { products } from './data';
 import HeroCarousel from './components/HeroCarousel';
@@ -22,6 +26,9 @@ import ProductCard from './components/ProductCard';
 import CartDrawer from './components/CartDrawer';
 import PaymentModal from './components/PaymentModal';
 import CoupleOfferSection from './components/CoupleOfferSection';
+import AuthModal from './components/AuthModal';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import AdminApp from './admin/AdminApp';
 import './App.css';
 
 const ANNOUNCEMENTS = [
@@ -30,7 +37,17 @@ const ANNOUNCEMENTS = [
   '✦ YARL SIHINA (யாழ் சிஹினா) · Heavyweight Combed Cotton Streetwear'
 ];
 
-function App() {
+function StorefrontApp() {
+  const { user, signOut } = useAuth();
+  const [route, setRoute] = useState(() => {
+    if (typeof window !== 'undefined') {
+      if (window.location.pathname.startsWith('/admin') || window.location.hash === '#admin') {
+        return 'admin';
+      }
+    }
+    return 'store';
+  });
+
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState('all');
@@ -39,12 +56,46 @@ function App() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeOrderData, setActiveOrderData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [announcementIdx, setAnnouncementIdx] = useState(0);
-
   const [isHeaderVisible, setIsHeaderVisible] = useState(false);
 
+  // Sync hash routing
+  useEffect(() => {
+    const handleHash = () => {
+      if (window.location.pathname.startsWith('/admin') || window.location.hash === '#admin') {
+        setRoute('admin');
+      } else {
+        setRoute('store');
+      }
+    };
+    window.addEventListener('hashchange', handleHash);
+    window.addEventListener('popstate', handleHash);
+    return () => {
+      window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('popstate', handleHash);
+    };
+  }, []);
+
+  const navigateToAdmin = (e) => {
+    if (e) e.preventDefault();
+    window.location.hash = '#admin';
+    setRoute('admin');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToStore = () => {
+    window.location.hash = '';
+    if (window.location.pathname.startsWith('/admin')) {
+      window.history.pushState({}, '', '/');
+    }
+    setRoute('store');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Rotate announcement bar every 6s
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setInterval(() => {
       setAnnouncementIdx(prev => (prev + 1) % ANNOUNCEMENTS.length);
     }, 6000);
@@ -52,7 +103,7 @@ function App() {
   }, []);
 
   // Show header on scroll, hide on top of page
-  React.useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 60) {
         setIsHeaderVisible(true);
@@ -79,7 +130,6 @@ function App() {
       return [...prev, { ...product, selectedSize, qty: 1, cartId: `${product.id}-${Date.now()}-${Math.random()}` }];
     });
 
-    // Automatically open the side drawer to provide immediate feedback like Joey Clothing
     setIsCartOpen(true);
   };
 
@@ -98,10 +148,14 @@ function App() {
   };
 
   const handleInitiateOrder = (customerData, math) => {
-    const orderRef = 'YA-' + Math.floor(100000 + Math.random() * 900000);
+    const orderRef = 'YS-' + Math.floor(1000 + Math.random() * 9000);
     setActiveOrderData({
       ref: orderRef,
-      customer: customerData,
+      customer: {
+        ...customerData,
+        name: customerData.name || user?.name || '',
+        email: customerData.email || user?.email || ''
+      },
       math,
       cartItems: [...cart]
     });
@@ -123,7 +177,12 @@ function App() {
     });
   }, [catalogProducts, activeCategory, searchQuery]);
 
-  const showHeader = isHeaderVisible || isCartOpen || isMobileMenuOpen;
+  // If on admin route, render Admin Portal
+  if (route === 'admin') {
+    return <AdminApp onExitAdmin={navigateToStore} />;
+  }
+
+  const showHeader = isHeaderVisible || isCartOpen || isMobileMenuOpen || isUserMenuOpen;
 
   return (
     <div className="joey-storefront-wrapper">
@@ -213,6 +272,64 @@ function App() {
               </button>
             </div>
 
+            {/* User Account / Greeting Section */}
+            {user ? (
+              <div className="header-user-wrap">
+                <button 
+                  className="header-user-btn" 
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  aria-label="User account"
+                >
+                  {user.avatar ? (
+                    <img src={user.avatar} alt={user.name} className="user-avatar-tiny" />
+                  ) : (
+                    <div className="user-avatar-initials">
+                      {user.firstName?.charAt(0) || 'Y'}
+                    </div>
+                  )}
+                  <div className="user-greeting-text">
+                    <span className="greeting-tamil">வணக்கம்</span>, 
+                    <strong className="greeting-name">{user.firstName}</strong>
+                  </div>
+                  <ChevronDown size={14} className="user-chevron" />
+                </button>
+
+                {/* Dropdown Menu */}
+                {isUserMenuOpen && (
+                  <div className="user-dropdown-menu">
+                    <div className="dropdown-user-header">
+                      <strong>{user.name}</strong>
+                      <small>{user.email}</small>
+                    </div>
+                    <div className="dropdown-divider"></div>
+                    <button 
+                      className="dropdown-item" 
+                      onClick={() => { setIsCartOpen(true); setIsUserMenuOpen(false); }}
+                    >
+                      <ShoppingBag size={15} />
+                      <span>My Shopping Bag ({totalCartCount})</span>
+                    </button>
+                    <div className="dropdown-divider"></div>
+                    <button 
+                      className="dropdown-item text-danger" 
+                      onClick={() => { signOut(); setIsUserMenuOpen(false); }}
+                    >
+                      <LogOut size={15} />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button 
+                className="header-signin-btn"
+                onClick={() => setIsAuthModalOpen(true)}
+              >
+                <User size={16} />
+                <span>Sign In</span>
+              </button>
+            )}
+
             {/* Currency Indicator */}
             <span className="currency-pill">LKR</span>
 
@@ -231,6 +348,31 @@ function App() {
         {/* Mobile Dropdown Menu */}
         {isMobileMenuOpen && (
           <div className="mobile-nav-drawer">
+            {/* User Greeting Card in Mobile Drawer */}
+            {user ? (
+              <div className="mobile-user-card">
+                {user.avatar ? (
+                  <img src={user.avatar} alt={user.name} className="mobile-avatar" />
+                ) : (
+                  <div className="mobile-avatar-placeholder">
+                    {user.firstName?.charAt(0) || 'Y'}
+                  </div>
+                )}
+                <div className="mobile-user-meta">
+                  <span className="mobile-greet-tamil">வணக்கம், {user.firstName}! ✨</span>
+                  <small className="mobile-user-email">{user.email}</small>
+                </div>
+              </div>
+            ) : (
+              <button 
+                className="mobile-auth-trigger-btn"
+                onClick={() => { setIsAuthModalOpen(true); setIsMobileMenuOpen(false); }}
+              >
+                <User size={16} />
+                <span>Sign In with Google / Facebook</span>
+              </button>
+            )}
+
             <button 
               className="mobile-nav-link"
               onClick={() => { setActiveCategory('all'); setIsMobileMenuOpen(false); document.getElementById('productsSection')?.scrollIntoView({ behavior: 'smooth' }); }}
@@ -260,8 +402,18 @@ function App() {
               className="mobile-nav-link"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              Our Story & Heritage
+              Our Story
             </a>
+
+            {user && (
+              <button 
+                className="mobile-nav-link text-danger"
+                onClick={() => { signOut(); setIsMobileMenuOpen(false); }}
+              >
+                <LogOut size={15} style={{ display: 'inline', marginRight: '6px' }} />
+                Sign Out
+              </button>
+            )}
           </div>
         )}
       </header>
@@ -286,7 +438,6 @@ function App() {
               <p>Reliable door-to-door dispatch in Sri Lanka</p>
             </div>
           </div>
-
           <div className="feature-cell">
             <div className="feature-icon-circle">
               <ShieldCheck size={22} />
@@ -296,7 +447,6 @@ function App() {
               <p>Ultra-soft, breathable heavyweight fabric</p>
             </div>
           </div>
-
           <div className="feature-cell">
             <div className="feature-icon-circle">
               <Sparkles size={22} />
@@ -306,7 +456,6 @@ function App() {
               <p>Celebrating Jaffna culture & contemporary cuts</p>
             </div>
           </div>
-
           <div className="feature-cell">
             <div className="feature-icon-circle">
               <RotateCcw size={22} />
@@ -378,11 +527,8 @@ function App() {
         )}
       </section>
 
-      {/* 5.5 Highlighted Couple Offer Section */}
-      <CoupleOfferSection 
-        coupleProduct={products.find(p => p.id === 'p1_couple')}
-        onAddToCart={handleAddToCart}
-      />
+      {/* Dedicated High-Impact Couple Offer Spotlight Section */}
+      <CoupleOfferSection onAddToCart={handleAddToCart} />
 
       {/* 6. Editorial Story Banner (Joey Clothing style) */}
       <section className="heritage-story-section" id="heritageStory">
@@ -439,13 +585,10 @@ function App() {
               Ceylon Heritage Streetwear. Merging cultural memory with elevated urban essentials across Sri Lanka.
             </p>
             <div className="footer-social-links">
-              <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-              </a>
               <a href="https://web.facebook.com/YarlSihina" target="_blank" rel="noreferrer" aria-label="Facebook">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
               </a>
-              <a href="https://wa.me/+94712599185" target="_blank" rel="noreferrer" aria-label="WhatsApp">
+              <a href="https://wa.me/94712599185" target="_blank" rel="noreferrer" aria-label="WhatsApp">
                 <MessageCircle size={18} />
               </a>
             </div>
@@ -455,10 +598,10 @@ function App() {
           <div className="footer-col">
             <h4 className="footer-heading">Collections</h4>
             <ul className="footer-links">
+              <li><button onClick={() => { setActiveCategory('all'); document.getElementById('productsSection')?.scrollIntoView({ behavior: 'smooth' }); }}>All Streetwear</button></li>
               <li><button onClick={() => { setActiveCategory('tshirt'); document.getElementById('productsSection')?.scrollIntoView({ behavior: 'smooth' }); }}>Heritage T-Shirts</button></li>
               <li><button onClick={() => { setActiveCategory('crop'); document.getElementById('productsSection')?.scrollIntoView({ behavior: 'smooth' }); }}>Crop Tops</button></li>
-              <li><button onClick={() => { setActiveCategory('couple'); document.getElementById('productsSection')?.scrollIntoView({ behavior: 'smooth' }); }}>Couple Packages</button></li>
-              <li><button onClick={() => { setActiveCategory('all'); document.getElementById('productsSection')?.scrollIntoView({ behavior: 'smooth' }); }}>New Season Drops</button></li>
+              <li><button onClick={() => { document.getElementById('coupleOfferSection')?.scrollIntoView({ behavior: 'smooth' }); }}>Signature Couple Set</button></li>
             </ul>
           </div>
 
@@ -469,7 +612,7 @@ function App() {
               <li><a href="#heritageStory">About Our Brand</a></li>
               <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Orders are dispatched within 2-3 weeks across Sri Lanka with advance confirmation."); }}>Shipping & Dispatch</a></li>
               <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Advance of LKR 500/piece is required to reserve your handcrafted order."); }}>Advance Policy</a></li>
-              <li><a href="https://wa.me/94770000000" target="_blank" rel="noreferrer">WhatsApp Support</a></li>
+              <li><a href="https://wa.me/94712599185" target="_blank" rel="noreferrer">WhatsApp Support (+94 71 259 9185)</a></li>
             </ul>
           </div>
 
@@ -511,14 +654,26 @@ function App() {
         onInitiateOrder={handleInitiateOrder}
       />
 
-      {/* 9. Order Confirmation & WhatsApp Payment Modal */}
+      {/* 9. Order Confirmation & WhatsApp Payment Modal with Slip Upload */}
       <PaymentModal 
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         orderData={activeOrderData}
       />
+
+      {/* 10. Google & Facebook Authentication Modal */}
+      <AuthModal 
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
     </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <AuthProvider>
+      <StorefrontApp />
+    </AuthProvider>
+  );
+}
