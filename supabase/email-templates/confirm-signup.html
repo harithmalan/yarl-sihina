@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify Your YARL SIHINA Account</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;500;600;700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: #F4F0EA;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #16232A;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .email-wrapper {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 0 16px 40px;
+    }
+
+    /* ── Header Logo bar ── */
+    .header-bar {
+      text-align: center;
+      padding: 28px 0 24px;
+    }
+
+    .logo-text {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 26px;
+      font-weight: 900;
+      color: #16232A;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .logo-text span {
+      color: #B58863;
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      color: #B58863;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* ── Card ── */
+    .email-card {
+      background: #FFFFFF;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 30px rgba(22, 35, 42, 0.1);
+    }
+
+    /* Hero banner */
+    .hero-banner {
+      background: linear-gradient(135deg, #16232A 0%, #2C4A52 60%, #16232A 100%);
+      padding: 44px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 40%, rgba(181, 136, 99, 0.18) 0%, transparent 65%);
+    }
+
+    .hero-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      background: rgba(181, 136, 99, 0.15);
+      border: 1.5px solid rgba(181, 136, 99, 0.5);
+      border-radius: 50%;
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .hero-icon svg {
+      width: 28px;
+      height: 28px;
+      fill: none;
+      stroke: #B58863;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .hero-headline {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .hero-sub {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.65);
+      line-height: 1.6;
+      max-width: 340px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* Body content */
+    .email-body {
+      padding: 36px 40px;
+    }
+
+    .greeting {
+      font-size: 16px;
+      font-weight: 600;
+      color: #16232A;
+      margin-bottom: 12px;
+    }
+
+    .email-intro {
+      font-size: 14px;
+      color: #5A7280;
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+
+    /* CTA Button */
+    .cta-wrapper {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, #16232A 0%, #2C4A52 100%);
+      color: #FFFFFF !important;
+      text-decoration: none;
+      padding: 15px 40px;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      box-shadow: 0 4px 20px rgba(22, 35, 42, 0.3);
+      transition: opacity 0.2s;
+    }
+
+    .cta-or {
+      display: block;
+      font-size: 12px;
+      color: #8A9BA8;
+      margin-top: 16px;
+    }
+
+    /* Fallback URL box */
+    .fallback-box {
+      background: #F4F0EA;
+      border: 1px dashed rgba(181, 136, 99, 0.4);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin-bottom: 28px;
+      word-break: break-all;
+    }
+
+    .fallback-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #B58863;
+      margin-bottom: 6px;
+    }
+
+    .fallback-url {
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #16232A;
+      line-height: 1.5;
+    }
+
+    /* Benefits strip */
+    .benefits-strip {
+      display: table;
+      width: 100%;
+      border-top: 1px solid #EDE8E0;
+      padding-top: 24px;
+      margin-bottom: 24px;
+    }
+
+    .benefit-item {
+      display: table-cell;
+      width: 33.33%;
+      text-align: center;
+      padding: 0 8px;
+      vertical-align: top;
+    }
+
+    .benefit-icon {
+      font-size: 22px;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .benefit-text {
+      font-size: 11px;
+      color: #5A7280;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    /* Expiry notice */
+    .expiry-notice {
+      background: rgba(181, 136, 99, 0.07);
+      border-left: 3px solid #B58863;
+      border-radius: 0 6px 6px 0;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      color: #8A7050;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    .email-footer {
+      border-top: 1px solid #EDE8E0;
+      padding-top: 24px;
+      text-align: center;
+    }
+
+    .footer-brand {
+      font-family: 'Cinzel', Georgia, serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #16232A;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
+    }
+
+    .footer-tamil {
+      font-size: 13px;
+      color: #B58863;
+      margin-bottom: 12px;
+    }
+
+    .footer-links {
+      font-size: 11px;
+      color: #8A9BA8;
+      margin-bottom: 10px;
+    }
+
+    .footer-links a {
+      color: #8A9BA8;
+      text-decoration: underline;
+    }
+
+    .footer-copy {
+      font-size: 11px;
+      color: #B0BEC5;
+    }
+
+    .footer-ignore {
+      font-size: 12px;
+      color: #8A9BA8;
+      margin-top: 16px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 480px) {
+      .email-body { padding: 24px 20px; }
+      .hero-banner { padding: 32px 20px; }
+      .hero-headline { font-size: 20px; }
+      .benefit-item { display: block; width: 100%; margin-bottom: 10px; }
+      .benefits-strip { display: block; }
+    }
+  </style>
+</head>
+<body>
+  <div class="email-wrapper">
+
+    <!-- Top Brand Bar -->
+    <div class="header-bar">
+      <div class="logo-text">YARL <span>SIHINA</span></div>
+      <div class="logo-sub">யாழ் சிஹினா · Heritage Streetwear</div>
+    </div>
+
+    <!-- Main Email Card -->
+    <div class="email-card">
+
+      <!-- Hero Section -->
+      <div class="hero-banner">
+        <div class="hero-icon">
+          <!-- Mail icon (inline SVG so it renders in all email clients) -->
+          <svg viewBox="0 0 24 24">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+        </div>
+        <h1 class="hero-headline">Verify Your Email</h1>
+        <p class="hero-sub">
+          One last step before you unlock the full YARL SIHINA experience.
+        </p>
+      </div>
+
+      <!-- Email Body -->
+      <div class="email-body">
+
+        <p class="greeting">Welcome to YARL SIHINA 🎉</p>
+
+        <p class="email-intro">
+          Thank you for creating your account. To start tracking your orders, saving
+          your delivery address, and getting early access to our drops, please verify
+          your email address by clicking the button below.
+        </p>
+
+        <!-- CTA -->
+        <div class="cta-wrapper">
+          <a href="{{ .ConfirmationURL }}" class="cta-btn">
+            ✓ &nbsp; Verify My Account
+          </a>
+          <span class="cta-or">Button not working? Copy the link below.</span>
+        </div>
+
+        <!-- Fallback URL -->
+        <div class="fallback-box">
+          <div class="fallback-label">Verification Link</div>
+          <div class="fallback-url">{{ .ConfirmationURL }}</div>
+        </div>
+
+        <!-- Expiry Notice -->
+        <div class="expiry-notice">
+          ⏱ This link expires in <strong>24 hours</strong>. If it expires, simply
+          sign in and request a new verification email.
+        </div>
+
+        <!-- Member Benefits -->
+        <div class="benefits-strip">
+          <div class="benefit-item">
+            <span class="benefit-icon">📦</span>
+            <div class="benefit-text">Track your Ceylon orders in real-time</div>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">📍</span>
+            <div class="benefit-text">Save your address for instant checkout</div>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">🔔</span>
+            <div class="benefit-text">First access to new drops & offers</div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+          <div class="footer-brand">YARL SIHINA</div>
+          <div class="footer-tamil">யாழ் சிஹினா</div>
+          <div class="footer-links">
+            <a href="#">Privacy Policy</a> &nbsp;·&nbsp;
+            <a href="#">Terms of Service</a> &nbsp;·&nbsp;
+            <a href="#">Contact Us</a>
+          </div>
+          <div class="footer-copy">© 2026 YARL SIHINA. All rights reserved. Jaffna, Sri Lanka 🇱🇰</div>
+          <p class="footer-ignore">
+            If you didn't create a YARL SIHINA account, you can safely ignore this email.
+            Someone may have entered your address by mistake.
+          </p>
+        </div>
+
+      </div>
+    </div><!-- /email-card -->
+
+  </div>
+</body>
+</html>

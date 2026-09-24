@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, ShoppingBag, Plus, Minus, Trash2, ShieldCheck, Sparkles, ArrowRight, Truck } from 'lucide-react';
+import { X, ShoppingBag, Plus, Minus, Trash2, ShieldCheck, ArrowRight, MapPin, CheckCircle2 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 export default function CartDrawer({
   isOpen,
@@ -9,16 +10,33 @@ export default function CartDrawer({
   onRemoveFromCart,
   onInitiateOrder
 }) {
+  const { user, savedAddress, saveAddress } = useAuth();
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     address: '',
+    city: '',
     email: '',
     notes: '',
     cod: false
   });
 
   const [formErrors, setFormErrors] = useState({});
+  const [addressSaved, setAddressSaved] = useState(false);
+
+  // Auto-fill from saved address when drawer opens or user logs in
+  useEffect(() => {
+    if (isOpen && savedAddress && !formData.address) {
+      setFormData(prev => ({
+        ...prev,
+        name: prev.name || savedAddress.name || '',
+        phone: prev.phone || savedAddress.phone || '',
+        address: prev.address || savedAddress.address || '',
+        city: prev.city || savedAddress.city || '',
+      }));
+    }
+  }, [isOpen, savedAddress]);
 
   // Prevent background scroll when drawer is open
   useEffect(() => {
@@ -119,7 +137,30 @@ export default function CartDrawer({
       return;
     }
 
+    // Save delivery address to profile for next time
+    if (formData.address.trim() && formData.name.trim()) {
+      saveAddress({
+        name: formData.name.trim(),
+        phone: formData.phone.trim(),
+        address: formData.address.trim(),
+        city: formData.city.trim(),
+      });
+      setAddressSaved(true);
+    }
+
     onInitiateOrder(formData, math);
+  };
+
+  const fillSavedAddress = () => {
+    if (!savedAddress) return;
+    setFormData(prev => ({
+      ...prev,
+      name: savedAddress.name || prev.name,
+      phone: savedAddress.phone || prev.phone,
+      address: savedAddress.address || prev.address,
+      city: savedAddress.city || prev.city,
+    }));
+    setFormErrors({});
   };
 
   return (
@@ -257,6 +298,28 @@ export default function CartDrawer({
                   <span className="drawer-required-notice">* Required for Islandwide Delivery</span>
                 </div>
 
+                {/* Saved Address Banner */}
+                {savedAddress?.address && (
+                  <div className="drawer-saved-address-banner">
+                    <div className="drawer-saved-address-info">
+                      <MapPin size={14} />
+                      <div>
+                        <span className="drawer-saved-label">Saved Address</span>
+                        <span className="drawer-saved-preview">{savedAddress.address}{savedAddress.city ? `, ${savedAddress.city}` : ''}</span>
+                      </div>
+                    </div>
+                    <button type="button" className="drawer-fill-btn" onClick={fillSavedAddress}>
+                      Use This
+                    </button>
+                  </div>
+                )}
+
+                {addressSaved && (
+                  <div className="drawer-address-saved-confirm">
+                    <CheckCircle2 size={13} /> Address saved to your profile
+                  </div>
+                )}
+
                 <div className="drawer-form-fields">
                   <div className="drawer-input-group">
                     <label>Full Name *</label>
@@ -288,12 +351,23 @@ export default function CartDrawer({
                     <label>Delivery Address *</label>
                     <textarea 
                       name="address" 
-                      placeholder="Street, City, Postal Code" 
+                      placeholder="No. 45, Temple Road, Nallur" 
                       rows={2}
                       value={formData.address} 
                       onChange={handleInputChange} 
                       className={formErrors.address ? 'input-error' : ''}
                       required 
+                    />
+                  </div>
+
+                  <div className="drawer-input-group">
+                    <label>City / District</label>
+                    <input 
+                      type="text" 
+                      name="city" 
+                      placeholder="e.g. Jaffna, Colombo, Kandy" 
+                      value={formData.city} 
+                      onChange={handleInputChange} 
                     />
                   </div>
 
