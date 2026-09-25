@@ -37,7 +37,8 @@ export default function AdminApp({ onExitAdmin }) {
     sessionStorage.getItem('yarl_admin_session') === 'granted'
   );
   const [isCheckingRole, setIsCheckingRole] = useState(true);
-  const [isActualAdmin, setIsActualAdmin] = useState(false);
+  // null = unknown/not yet checked, true = confirmed admin, false = confirmed NOT admin
+  const [isActualAdmin, setIsActualAdmin] = useState(null);
   const [adminPin, setAdminPin] = useState('');
   const [pinError, setPinError] = useState('');
   const [showPass, setShowPass] = useState(false);
@@ -46,21 +47,45 @@ export default function AdminApp({ onExitAdmin }) {
   useEffect(() => {
     const checkAdminRole = async () => {
       setIsCheckingRole(true);
-      if (isSupabaseConfigured && supabase && user?.id) {
-        try {
-          const { data } = await supabase
-            .from('profiles')
-            .select('is_admin')
-            .eq('id', user.id)
-            .single();
-          setIsActualAdmin(data?.is_admin === true);
-        } catch {
-          setIsActualAdmin(false);
-        }
-      } else {
-        // No Supabase — allow access via password only (dev/preview mode)
-        setIsActualAdmin(true);
+
+      if (!isSupabaseConfigured || !supabase) {
+        // No Supabase configured — dev/preview mode, let password gate decide
+        setIsActualAdmin(null);
+        setIsCheckingRole(false);
+        return;
       }
+
+      if (!user?.id) {
+        // Not logged in yet — could still be loading, don't block
+        setIsActualAdmin(null);
+        setIsCheckingRole(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('is_admin')
+          .eq('id', user.id)
+          .maybeSingle(); // maybeSingle() returns null if not found, no error
+
+        if (error) {
+          // DB error → fall back to password gate (don't hard block)
+          console.warn('Admin role check error:', error.message);
+          setIsActualAdmin(null);
+        } else if (data === null) {
+          // Profile row doesn't exist yet → fall back to password gate
+          console.warn('No profile row found — falling back to password gate');
+          setIsActualAdmin(null);
+        } else {
+          // Profile found — check is_admin flag
+          setIsActualAdmin(data.is_admin === true);
+        }
+      } catch (err) {
+        console.warn('Admin check exception:', err);
+        setIsActualAdmin(null);
+      }
+
       setIsCheckingRole(false);
     };
     checkAdminRole();
@@ -121,8 +146,9 @@ export default function AdminApp({ onExitAdmin }) {
     );
   }
 
-  // ── 2. Logged-in user is NOT admin → block immediately ───────
-  if (isSupabaseConfigured && !isActualAdmin) {
+  // ── 2. Logged-in user is confirmed NOT admin → block immediately ───────
+  // Only block when isActualAdmin is explicitly FALSE (not null/unknown)
+  if (isSupabaseConfigured && isActualAdmin === false) {
     return (
       <div className="admin-login-screen">
         <div className="admin-login-card">
