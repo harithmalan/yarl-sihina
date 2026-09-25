@@ -236,25 +236,24 @@ export default function PaymentModal({ isOpen, onClose, orderData, onOrderComple
             <h2 className="success-title">Payment Slip Received!</h2>
             <p className="success-order-id">Order Ref: <strong>#{submittedOrder.id}</strong></p>
             <p className="success-desc">
-              Your slip has been sent directly to the **YARL SIHINA Admin Team**. Once verified (usually within 15–30 minutes), your pieces will be tailored and dispatched.
+              Your slip has been sent directly to the <strong>YARL SIHINA Admin Team</strong>. Once verified (usually within 15–30 minutes), your pieces will be tailored and dispatched.
             </p>
 
             <div className="success-action-box">
-              <a 
-                href="/admin" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  window.location.hash = '#admin';
-                  window.location.reload();
+
+              <button
+                className="btn-modal-submit-slip"
+                onClick={() => {
+                  const msg = `Hello YARL SIHINA! \ud83c\udfa8%0AMy order *#${submittedOrder.id}* slip has been uploaded. Please confirm receipt. Thank you!`;
+                  window.open(`https://wa.me/94712599185?text=${msg}`, '_blank');
                 }}
-                className="btn-admin-preview"
               >
-                <Eye size={16} />
-                <span>View Slip in Admin Hub (Review Queue)</span>
-              </a>
+                <MessageCircle size={16} />
+                <span>Send WhatsApp Confirmation</span>
+              </button>
 
               <button className="btn-modal-cancel" onClick={onClose}>
-                Done & Return to Store
+                Done &amp; Return to Store
               </button>
             </div>
           </div>
@@ -263,3 +262,4 @@ export default function PaymentModal({ isOpen, onClose, orderData, onOrderComple
     </div>
   );
 }
+

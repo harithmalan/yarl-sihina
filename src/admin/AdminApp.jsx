@@ -11,10 +11,12 @@ import {
   Lock, 
   LogOut,
   ExternalLink,
-  Shirt
+  Shirt,
+  AlertTriangle
 } from 'lucide-react';
 import { orderService } from '../lib/orderService';
-import { isSupabaseConfigured } from '../lib/supabaseClient';
+import { isSupabaseConfigured, supabase } from '../lib/supabaseClient';
+import { useAuth } from '../context/AuthContext';
 import SlipVerificationModal from './components/SlipVerificationModal';
 import OrderManagement from './components/OrderManagement';
 import InventoryManager from './components/InventoryManager';
@@ -22,18 +24,49 @@ import AnalyticsDashboard from './components/AnalyticsDashboard';
 import ProductManager from './components/ProductManager';
 import './Admin.css';
 
+// Admin password from env — set VITE_ADMIN_PASSWORD in .env.local
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'yarl2026';
+
 export default function AdminApp({ onExitAdmin }) {
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
-  const [activeTab, setActiveTab] = useState('review'); // 'dashboard', 'review', 'orders', 'inventory'
+  const [activeTab, setActiveTab] = useState('review');
   const [selectedOrderForReview, setSelectedOrderForReview] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return localStorage.getItem('yarl_admin_auth') === 'true';
-  });
+  const [isAdminVerified, setIsAdminVerified] = useState(() =>
+    sessionStorage.getItem('yarl_admin_session') === 'granted'
+  );
+  const [isCheckingRole, setIsCheckingRole] = useState(true);
+  const [isActualAdmin, setIsActualAdmin] = useState(false);
   const [adminPin, setAdminPin] = useState('');
   const [pinError, setPinError] = useState('');
+  const [showPass, setShowPass] = useState(false);
 
-  // Load orders
+  // Check if logged-in user has is_admin = TRUE in Supabase profiles
+  useEffect(() => {
+    const checkAdminRole = async () => {
+      setIsCheckingRole(true);
+      if (isSupabaseConfigured && supabase && user?.id) {
+        try {
+          const { data } = await supabase
+            .from('profiles')
+            .select('is_admin')
+            .eq('id', user.id)
+            .single();
+          setIsActualAdmin(data?.is_admin === true);
+        } catch {
+          setIsActualAdmin(false);
+        }
+      } else {
+        // No Supabase — allow access via password only (dev/preview mode)
+        setIsActualAdmin(true);
+      }
+      setIsCheckingRole(false);
+    };
+    checkAdminRole();
+  }, [user]);
+
+  // Load ALL orders (admin sees everything)
   const loadOrders = async () => {
     setIsLoading(true);
     const data = await orderService.getOrders();
@@ -42,26 +75,24 @@ export default function AdminApp({ onExitAdmin }) {
   };
 
   useEffect(() => {
-    if (isAuthenticated) {
-      loadOrders();
-    }
-  }, [isAuthenticated]);
+    if (isAdminVerified && isActualAdmin) loadOrders();
+  }, [isAdminVerified, isActualAdmin]);
 
   const handleAdminLogin = (e) => {
     e.preventDefault();
-    // Default demo passcode is 1234 or empty for instant review
-    if (adminPin.trim() === '1234' || adminPin.trim() === 'admin' || adminPin.trim() === '') {
-      setIsAuthenticated(true);
-      localStorage.setItem('yarl_admin_auth', 'true');
+    if (adminPin === ADMIN_PASSWORD) {
+      sessionStorage.setItem('yarl_admin_session', 'granted');
+      setIsAdminVerified(true);
       setPinError('');
     } else {
-      setPinError('Invalid Passcode. Enter 1234 or leave blank for demo access.');
+      setPinError('Incorrect password. Access denied.');
+      setAdminPin('');
     }
   };
 
   const handleAdminLogout = () => {
-    setIsAuthenticated(false);
-    localStorage.removeItem('yarl_admin_auth');
+    sessionStorage.removeItem('yarl_admin_session');
+    setIsAdminVerified(false);
   };
 
   // Verify slip action
@@ -78,8 +109,41 @@ export default function AdminApp({ onExitAdmin }) {
 
   const stats = orderService.calculateStats(orders);
 
-  // If not authenticated, show Admin Login Gate
-  if (!isAuthenticated) {
+  // ── 1. Still checking Supabase role ──────────────────────────
+  if (isCheckingRole) {
+    return (
+      <div className="admin-login-screen">
+        <div className="admin-login-card" style={{ textAlign: 'center' }}>
+          <div className="admin-brand-icon"><ShieldCheck size={32} className="text-caramel" /></div>
+          <div style={{ marginTop: 16, color: '#B58863', fontSize: 14 }}>Checking access...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── 2. Logged-in user is NOT admin → block immediately ───────
+  if (isSupabaseConfigured && !isActualAdmin) {
+    return (
+      <div className="admin-login-screen">
+        <div className="admin-login-card">
+          <div className="admin-brand-icon" style={{ background: 'rgba(239,68,68,0.1)', borderColor: 'rgba(239,68,68,0.3)' }}>
+            <AlertTriangle size={32} style={{ color: '#ef4444' }} />
+          </div>
+          <h1 className="admin-login-title">Access Denied</h1>
+          <p className="admin-login-desc" style={{ color: '#ef4444', marginBottom: 24 }}>
+            You don't have permission to access the Admin Portal. This area is restricted to authorised administrators only.
+          </p>
+          <button type="button" onClick={onExitAdmin} className="admin-btn approve-btn w-full">
+            <ArrowLeft size={16} />
+            <span>Return to Store</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── 3. Admin not yet password-verified this session ───────────
+  if (!isAdminVerified) {
     return (
       <div className="admin-login-screen">
         <div className="admin-login-card">
@@ -89,20 +153,30 @@ export default function AdminApp({ onExitAdmin }) {
           <h1 className="admin-login-title">YARL SIHINA</h1>
           <p className="admin-login-subtitle">Admin Portal</p>
           <p className="admin-login-desc">
-            Secure workspace for verifying customer bank transfer slips and dispatching Ceylon streetwear orders.
+            Secure workspace for verifying bank transfer slips and managing Ceylon streetwear orders.
           </p>
 
           <form onSubmit={handleAdminLogin} className="admin-login-form">
             <div className="admin-field-group">
-              <label>Admin Passcode (Default: <code>1234</code>)</label>
-              <input 
-                type="password" 
-                className="admin-input-text"
-                placeholder="Enter 1234 or press Continue"
-                value={adminPin}
-                onChange={e => setAdminPin(e.target.value)}
-                autoFocus
-              />
+              <label>Admin Password</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPass ? 'text' : 'password'}
+                  className="admin-input-text"
+                  placeholder="Enter admin password"
+                  value={adminPin}
+                  onChange={e => setAdminPin(e.target.value)}
+                  autoFocus
+                  autoComplete="off"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPass(p => !p)}
+                  style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#8A9BA8', fontSize: 12 }}
+                >
+                  {showPass ? 'Hide' : 'Show'}
+                </button>
+              </div>
             </div>
 
             {pinError && <div className="admin-pin-error">{pinError}</div>}

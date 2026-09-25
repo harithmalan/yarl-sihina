@@ -18,6 +18,7 @@ import {
   User, 
   LogOut, 
   Lock, 
+  Package,
   ExternalLink 
 } from 'lucide-react';
 import { productService } from './lib/productService';
@@ -27,6 +28,7 @@ import CartDrawer from './components/CartDrawer';
 import PaymentModal from './components/PaymentModal';
 import CoupleOfferSection from './components/CoupleOfferSection';
 import AuthModal from './components/AuthModal';
+import OrderHistory from './components/OrderHistory';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import AdminApp from './admin/AdminApp';
 import './App.css';
@@ -58,6 +60,7 @@ function StorefrontApp() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
   const [announcementIdx, setAnnouncementIdx] = useState(0);
   const [isHeaderVisible, setIsHeaderVisible] = useState(false);
   const [productsList, setProductsList] = useState(() => productService.getProducts());
@@ -156,7 +159,13 @@ function StorefrontApp() {
     setCart(prev => prev.filter(item => item.cartId !== cartId));
   };
 
+  // Gate checkout behind login
   const handleInitiateOrder = (customerData, math) => {
+    if (!user) {
+      setIsCartOpen(false);
+      setIsAuthModalOpen(true);
+      return;
+    }
     const orderRef = 'YS-' + Math.floor(1000 + Math.random() * 9000);
     setActiveOrderData({
       ref: orderRef,
@@ -317,6 +326,13 @@ function StorefrontApp() {
                     >
                       <ShoppingBag size={15} />
                       <span>My Shopping Bag ({totalCartCount})</span>
+                    </button>
+                    <button 
+                      className="dropdown-item" 
+                      onClick={() => { setIsOrderHistoryOpen(true); setIsUserMenuOpen(false); }}
+                    >
+                      <Package size={15} />
+                      <span>My Orders</span>
                     </button>
                     <div className="dropdown-divider"></div>
                     <button 
@@ -675,6 +691,14 @@ function StorefrontApp() {
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
       />
+
+      {/* 11. Customer Order History Panel */}
+      {isOrderHistoryOpen && (
+        <OrderHistory
+          user={user}
+          onClose={() => setIsOrderHistoryOpen(false)}
+        />
+      )}
     </div>
   );
 }

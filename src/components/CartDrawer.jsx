@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, ShoppingBag, Plus, Minus, Trash2, ShieldCheck, ArrowRight, MapPin, CheckCircle2 } from 'lucide-react';
+import { X, ShoppingBag, Plus, Minus, Trash2, ShieldCheck, ArrowRight, MapPin, CheckCircle2, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function CartDrawer({
@@ -297,6 +297,17 @@ export default function CartDrawer({
                   <h3>Delivery Details</h3>
                   <span className="drawer-required-notice">* Required for Islandwide Delivery</span>
                 </div>
+
+                {/* Login Gate Notice */}
+                {!user && (
+                  <div className="drawer-login-gate">
+                    <Lock size={18} className="drawer-login-gate-icon" />
+                    <div className="drawer-login-gate-text">
+                      <strong>Sign in to place your order</strong>
+                      You need an account to track orders and save your delivery address.
+                    </div>
+                  </div>
+                )}
 
                 {/* Saved Address Banner */}
                 {savedAddress?.address && (
