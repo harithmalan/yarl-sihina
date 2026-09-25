@@ -16,39 +16,110 @@ export default function OrderReceipt({ order, onClose }) {
 
   const items = Array.isArray(order.items) ? order.items : [];
 
-  // ── Download as Image (PNG) ──────────────────────────────────
-  const downloadAsImage = async () => {
+  const [isGenerating, setIsGenerating] = React.useState(false);
+
+  // Helper: clone receipt into hidden full-height container and capture it
+  const captureFullReceipt = async () => {
     const { default: html2canvas } = await import('html2canvas');
-    const canvas = await html2canvas(receiptRef.current, {
+
+    const source = receiptRef.current;
+
+    // Create an off-screen container with exact width, auto height (no clipping)
+    const offscreen = document.createElement('div');
+    offscreen.style.cssText = `
+      position: fixed;
+      top: -99999px;
+      left: -99999px;
+      width: ${source.scrollWidth}px;
+      height: auto;
+      overflow: visible;
+      z-index: -1;
+      background: #ffffff;
+    `;
+
+    // Deep clone so fonts/styles are preserved
+    const clone = source.cloneNode(true);
+    clone.style.cssText = `
+      width: ${source.scrollWidth}px;
+      height: auto;
+      overflow: visible;
+      max-height: none;
+    `;
+    offscreen.appendChild(clone);
+    document.body.appendChild(offscreen);
+
+    // Wait one frame for layout
+    await new Promise(r => setTimeout(r, 80));
+
+    const canvas = await html2canvas(clone, {
       scale: 2,
       useCORS: true,
       backgroundColor: '#ffffff',
       logging: false,
+      width: source.scrollWidth,
+      height: clone.scrollHeight,
+      windowWidth: source.scrollWidth,
+      windowHeight: clone.scrollHeight,
     });
-    const link = document.createElement('a');
-    link.download = `YARL-SIHINA-Receipt-${order.id}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+
+    document.body.removeChild(offscreen);
+    return canvas;
+  };
+
+  // ── Download as Image (PNG) ──────────────────────────────────
+  const downloadAsImage = async () => {
+    setIsGenerating(true);
+    try {
+      const canvas = await captureFullReceipt();
+      const link = document.createElement('a');
+      link.download = `YARL-SIHINA-Receipt-${order.id}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   // ── Download as PDF ──────────────────────────────────────────
   const downloadAsPDF = async () => {
-    const { default: html2canvas } = await import('html2canvas');
-    const { default: jsPDF } = await import('jspdf');
+    setIsGenerating(true);
+    try {
+      const { default: jsPDF } = await import('jspdf');
+      const canvas = await captureFullReceipt();
+      const imgData = canvas.toDataURL('image/png');
 
-    const canvas = await html2canvas(receiptRef.current, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#ffffff',
-      logging: false,
-    });
+      // Calculate PDF page dimensions to fit the full receipt
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const imgHeightMm = (canvas.height * pageWidth) / canvas.width;
+      const pageHeightMm = pdf.internal.pageSize.getHeight();
 
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = (canvas.height * pageWidth) / canvas.width;
-    pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight);
-    pdf.save(`YARL-SIHINA-Receipt-${order.id}.pdf`);
+      if (imgHeightMm <= pageHeightMm) {
+        // Fits on one page
+        pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, imgHeightMm);
+      } else {
+        // Multi-page: slice the image across pages
+        const pxPerMm = canvas.width / pageWidth;
+        const pageHeightPx = pageHeightMm * pxPerMm;
+        let yPx = 0;
+        while (yPx < canvas.height) {
+          const sliceH = Math.min(pageHeightPx, canvas.height - yPx);
+          const pageCanvas = document.createElement('canvas');
+          pageCanvas.width = canvas.width;
+          pageCanvas.height = sliceH;
+          const ctx = pageCanvas.getContext('2d');
+          ctx.drawImage(canvas, 0, yPx, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
+          const sliceData = pageCanvas.toDataURL('image/png');
+          if (yPx > 0) pdf.addPage();
+          pdf.addImage(sliceData, 'PNG', 0, 0, pageWidth, (sliceH / pxPerMm));
+          yPx += sliceH;
+        }
+      }
+
+      pdf.save(`YARL-SIHINA-Receipt-${order.id}.pdf`);
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const statusLabels = {
@@ -86,15 +157,25 @@ export default function OrderReceipt({ order, onClose }) {
         <div className="receipt-action-bar">
           <span className="receipt-action-title">Order Receipt</span>
           <div className="receipt-action-btns">
-            <button className="receipt-dl-btn image-btn" onClick={downloadAsImage}>
-              <Image size={15} />
-              <span>Save Image</span>
+            <button
+              className="receipt-dl-btn image-btn"
+              onClick={downloadAsImage}
+              disabled={isGenerating}
+              title="Download full receipt as PNG image"
+            >
+              {isGenerating ? <div className="receipt-btn-spinner" /> : <Image size={15} />}
+              <span>{isGenerating ? 'Generating…' : 'Save Image'}</span>
             </button>
-            <button className="receipt-dl-btn pdf-btn" onClick={downloadAsPDF}>
-              <FileText size={15} />
-              <span>Save PDF</span>
+            <button
+              className="receipt-dl-btn pdf-btn"
+              onClick={downloadAsPDF}
+              disabled={isGenerating}
+              title="Download full receipt as PDF"
+            >
+              {isGenerating ? <div className="receipt-btn-spinner" /> : <FileText size={15} />}
+              <span>{isGenerating ? 'Generating…' : 'Save PDF'}</span>
             </button>
-            <button className="receipt-close-btn" onClick={onClose}>
+            <button className="receipt-close-btn" onClick={onClose} disabled={isGenerating}>
               <X size={18} />
             </button>
           </div>

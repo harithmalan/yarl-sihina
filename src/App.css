@@ -4470,3 +4470,19 @@
   color: #8A9BA8;
   font-style: italic;
 }
+
+/* Receipt button spinner + disabled state */
+.receipt-btn-spinner {
+  width: 13px;
+  height: 13px;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+.receipt-dl-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
