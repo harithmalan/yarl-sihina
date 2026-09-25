@@ -24,8 +24,8 @@ import AnalyticsDashboard from './components/AnalyticsDashboard';
 import ProductManager from './components/ProductManager';
 import './Admin.css';
 
-// Admin password from env — set VITE_ADMIN_PASSWORD in .env.local
-const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'yarl2026';
+// Admin password from env — set VITE_ADMIN_PASSWORD in .env.local / Vercel
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'YarlAdmin@2026';
 
 export default function AdminApp({ onExitAdmin }) {
   const { user } = useAuth();
