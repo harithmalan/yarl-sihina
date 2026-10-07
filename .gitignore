@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Python OCR service
+slip-ocr-service/.env
+slip-ocr-service/__pycache__/
+slip-ocr-service/*.pyc
+slip-ocr-service/.venv/
+slip-ocr-service/venv/

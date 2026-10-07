@@ -4486,3 +4486,259 @@
   opacity: 0.65;
   cursor: not-allowed;
 }
+
+
+/* ═══════════════════════════════════════════════════════════
+   OCR / Slip Analysis UI Styles
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Analyzing progress box ────────────────────────────────────────────── */
+.ocr-analyzing-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(181, 136, 99, 0.08);
+  border: 1px solid rgba(181, 136, 99, 0.2);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 12px 0;
+}
+.ocr-brain-icon { color: #B58863; }
+.ocr-progress-wrap { flex: 1; }
+.ocr-analyzing-label {
+  font-size: 13px;
+  color: #B58863;
+  margin: 0 0 6px;
+  font-weight: 500;
+}
+.ocr-progress-bar {
+  height: 6px;
+  background: rgba(181, 136, 99, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ocr-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #B58863, #d4a574);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+/* ── OCR result card ────────────────────────────────────────────────────── */
+.ocr-result-box {
+  background: rgba(181, 136, 99, 0.06);
+  border: 1px solid rgba(181, 136, 99, 0.25);
+  border-radius: 10px;
+  padding: 14px;
+  margin: 12px 0;
+}
+
+.ocr-result-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #B58863;
+}
+.ocr-result-header span:nth-child(2) { flex: 1; }
+
+.ocr-confidence-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  border: 1px solid currentColor;
+  font-weight: 600;
+}
+
+.ocr-reanalyze-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #8A9BA8;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+.ocr-reanalyze-btn:hover { color: #B58863; }
+
+.ocr-fields-grid { display: flex; flex-direction: column; gap: 8px; }
+
+.ocr-field-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 6px;
+}
+.ocr-field-item label {
+  font-size: 10px;
+  color: #8A9BA8;
+  display: block;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 1px;
+}
+.ocr-field-item strong { color: #e8ddd0; }
+.ocr-field-icon { color: #B58863; flex-shrink: 0; }
+.ocr-field-item > svg:last-child { margin-left: auto; }
+
+.text-success { color: #22c55e !important; }
+
+.ocr-alt-refs {
+  margin-top: 8px;
+  font-size: 11px;
+  color: #8A9BA8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.ocr-ref-chip {
+  background: rgba(181, 136, 99, 0.12);
+  color: #B58863;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: monospace;
+}
+
+.ocr-warning-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #f59e0b;
+  margin-top: 8px;
+}
+
+/* ── Duplicate slip error banner ───────────────────────────────────────── */
+.slip-duplicate-banner {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  color: #ef4444;
+}
+.slip-duplicate-banner > div { flex: 1; }
+.slip-duplicate-banner strong {
+  font-size: 14px;
+  display: block;
+  margin-bottom: 4px;
+}
+.slip-duplicate-banner p {
+  font-size: 13px;
+  margin: 0;
+  color: #fca5a5;
+  line-height: 1.5;
+}
+.slip-duplicate-banner code {
+  background: rgba(239, 68, 68, 0.15);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+/* ── OCR confirm checkbox ───────────────────────────────────────────────── */
+.ocr-confirm-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 13px;
+  color: #c8bfb5;
+  padding: 10px 12px;
+  background: rgba(34, 197, 94, 0.06);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 8px;
+  margin: 8px 0;
+  cursor: pointer;
+  line-height: 1.5;
+}
+.ocr-confirm-checkbox input {
+  accent-color: #22c55e;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.ocr-confirm-checkbox strong { color: #e8ddd0; }
+
+/* ── Auto-filled indicator tag ─────────────────────────────────────────── */
+.auto-filled-tag {
+  display: inline-block;
+  font-size: 10px;
+  background: rgba(181, 136, 99, 0.15);
+  color: #B58863;
+  padding: 1px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.ocr-auto-filled {
+  border-color: rgba(181, 136, 99, 0.5) !important;
+  background: rgba(181, 136, 99, 0.05) !important;
+}
+
+/* ── OCR hint in upload zone ────────────────────────────────────────────── */
+.ocr-hint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #B58863 !important;
+  font-size: 11px !important;
+  margin-top: 4px;
+}
+
+/* ── Admin panel: OCR data in SlipVerificationModal ────────────────────── */
+.ocr-admin-panel {
+  margin-top: 10px;
+  padding: 10px 12px;
+  background: rgba(181, 136, 99, 0.08);
+  border: 1px solid rgba(181, 136, 99, 0.2);
+  border-radius: 8px;
+}
+.ocr-admin-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #B58863;
+  margin-bottom: 8px;
+}
+.ocr-conf-badge {
+  margin-left: auto;
+  font-size: 10px;
+  background: rgba(181, 136, 99, 0.15);
+  padding: 1px 6px;
+  border-radius: 10px;
+  color: #B58863;
+}
+.ocr-admin-fields { display: flex; flex-direction: column; gap: 4px; }
+.ocr-admin-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #c8bfb5;
+}
+.ocr-admin-field strong { color: #e8ddd0; }
+
+/* ── Spin animation (shared) ───────────────────────────────────────────── */
+.spinning {
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}

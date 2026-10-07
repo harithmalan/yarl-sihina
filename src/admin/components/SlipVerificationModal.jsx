@@ -14,7 +14,9 @@ import {
   User, 
   Phone, 
   MapPin, 
-  Package
+  Package,
+  Brain,
+  AlertCircle
 } from 'lucide-react';
 
 export default function SlipVerificationModal({ order, onClose, onVerify }) {
@@ -145,6 +147,38 @@ export default function SlipVerificationModal({ order, onClose, onVerify }) {
                 </div>
               </div>
             </div>
+
+            {/* AI OCR extracted data panel */}
+            {(order.ocr_ref_number || order.ocr_beneficiary_name) && (
+              <div className="ocr-admin-panel">
+                <div className="ocr-admin-header">
+                  <Brain size={14} className="text-caramel" />
+                  <span>AI OCR Extracted</span>
+                  {order.ocr_confidence != null && (
+                    <span className="ocr-conf-badge">
+                      {Math.round(order.ocr_confidence * 100)}% confidence
+                    </span>
+                  )}
+                </div>
+                <div className="ocr-admin-fields">
+                  {order.ocr_ref_number && (
+                    <div className="ocr-admin-field">
+                      <Hash size={12} />
+                      <span>OCR Ref: <strong>{order.ocr_ref_number}</strong></span>
+                      {order.ocr_ref_number === order.slip_reference
+                        ? <CheckCircle2 size={12} className="text-success" title="Matches submitted ref" />
+                        : <AlertCircle size={12} style={{ color: '#f59e0b' }} title="Differs from submitted ref" />}
+                    </div>
+                  )}
+                  {order.ocr_beneficiary_name && (
+                    <div className="ocr-admin-field">
+                      <User size={12} />
+                      <span>Beneficiary: <strong>{order.ocr_beneficiary_name}</strong></span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right: Order Summary & Approval Decision */}
