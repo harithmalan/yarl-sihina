@@ -102,6 +102,9 @@ export default function PaymentModal({ isOpen, onClose, orderData, onOrderComple
     }
   }, []);
 
+  if (!isOpen || !orderData) return null;
+  const { ref, customer, math, cartItems } = orderData;
+
   // ── File selection handler ───────────────────────────────────────────────
   const handleFileChange = (e) => {
     const file = e.target.files[0];
