@@ -259,6 +259,7 @@ ALTER TABLE public.discounts            ENABLE ROW LEVEL SECURITY;
 
 -- PROFILES
 CREATE POLICY "Users can view their own profile"   ON public.profiles FOR SELECT USING (auth.uid() = id);
+CREATE POLICY "Users can insert their own profile" ON public.profiles FOR INSERT WITH CHECK (auth.uid() = id);
 CREATE POLICY "Users can update their own profile" ON public.profiles FOR UPDATE USING (auth.uid() = id) WITH CHECK (auth.uid() = id);
 CREATE POLICY "Admins can view all profiles"       ON public.profiles FOR SELECT USING (EXISTS (SELECT 1 FROM public.profiles AS p WHERE p.id = auth.uid() AND p.is_admin = TRUE));
 CREATE POLICY "Admins can update all profiles"     ON public.profiles FOR UPDATE USING (EXISTS (SELECT 1 FROM public.profiles AS p WHERE p.id = auth.uid() AND p.is_admin = TRUE));
