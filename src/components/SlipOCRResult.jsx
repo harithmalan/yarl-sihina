@@ -43,6 +43,9 @@ export default function SlipOCRResult({
               style={{ width: `${analyzeProgress}%` }}
             />
           </div>
+          <small style={{ color: 'var(--palette-slate-gray)', fontSize: '0.75rem', marginTop: '6px', display: 'block' }}>
+            This analysis may take up to a minute to verify. Please hold on...
+          </small>
         </div>
       </div>
     );
