@@ -41,10 +41,8 @@ export default function PaymentModal({ isOpen, onClose, orderData, onOrderComple
   const [duplicateError, setDuplicateError] = useState(null);
   const [ocrConfirmed, setOcrConfirmed] = useState(false);
 
-  if (!isOpen || !orderData) return null;
-  const { ref, customer, math, cartItems } = orderData;
-
   // ── Run OCR analysis on the uploaded slip image ──────────────────────────
+  // IMPORTANT: useCallback must be declared BEFORE any early returns (Rules of Hooks)
   const runAnalysis = useCallback(async (file, previewUrl) => {
     setIsAnalyzing(true);
     setAnalyzeProgress(0);
