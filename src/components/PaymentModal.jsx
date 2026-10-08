@@ -339,6 +339,18 @@ export default function PaymentModal({ isOpen, onClose, orderData, onOrderComple
 
 
 
+              {/* AI OCR Result Panel (Only shows while analyzing) */}
+              {isAnalyzing && (
+                <SlipOCRResult
+                  ocrData={ocrData}
+                  isAnalyzing={isAnalyzing}
+                  analyzeProgress={analyzeProgress}
+                  onReanalyze={() =>
+                    slipFile && runAnalysis(slipFile, slipPreview)
+                  }
+                />
+              )}
+
               {/* Bank & Reference Row */}
               <div className="slip-meta-inputs-grid">
                 <div className="slip-input-group">
