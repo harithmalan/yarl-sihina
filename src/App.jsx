@@ -31,6 +31,7 @@ import AuthModal from './components/AuthModal';
 import OrderHistory from './components/OrderHistory';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import AdminApp from './admin/AdminApp';
+import Loader from './components/ui/3d-box-loader-animation';
 import './App.css';
 
 const ANNOUNCEMENTS = [
@@ -71,7 +72,7 @@ function StorefrontApp() {
     // Artificial delay to show the beautiful loader, or wait for window.onload
     const timer = setTimeout(() => {
       setIsSiteLoaded(true);
-    }, 1800);
+    }, 2500); // Extended slightly to let the 3D animation play out
     return () => clearTimeout(timer);
   }, []);
 
@@ -217,9 +218,11 @@ function StorefrontApp() {
       {/* 0. Global Site Loader Overlay */}
       <div className={`site-loader-overlay ${isSiteLoaded ? 'fade-out' : ''}`}>
         <div className="site-loader-content">
-          <img src="/img/logo.png" alt="YARL SIHINA Loading" className="site-loader-logo" />
-          <h1 className="site-loader-title">YARL SIHINA</h1>
-          <span className="site-loader-subtitle">யாழ் சிஹினா</span>
+          <Loader />
+          <div style={{ marginTop: '40px', textAlign: 'center' }}>
+            <h1 className="site-loader-title">YARL SIHINA</h1>
+            <span className="site-loader-subtitle">யாழ் சிஹினா</span>
+          </div>
         </div>
       </div>
 
