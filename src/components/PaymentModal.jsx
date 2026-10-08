@@ -145,11 +145,7 @@ export default function PaymentModal({ isOpen, onClose, orderData, onOrderComple
       return;
     }
 
-    // Require the user to confirm AI-extracted details before submitting
-    if (ocrData && !ocrConfirmed && ocrData.confidence >= 0.5) {
-      setUploadError('Please tick the confirmation box to verify the AI-extracted details above.');
-      return;
-    }
+
 
     try {
       setIsSubmitting(true);
@@ -341,43 +337,7 @@ export default function PaymentModal({ isOpen, onClose, orderData, onOrderComple
                 </label>
               </div>
 
-              {/* AI OCR Result Panel */}
-              {(isAnalyzing || ocrData) && (
-                <SlipOCRResult
-                  ocrData={ocrData}
-                  isAnalyzing={isAnalyzing}
-                  analyzeProgress={analyzeProgress}
-                  onReanalyze={() =>
-                    slipFile && runAnalysis(slipFile, slipPreview)
-                  }
-                />
-              )}
 
-              {/* OCR Confirmation Checkbox */}
-              {ocrData &&
-                ocrData.ref_number &&
-                ocrData.confidence >= 0.5 &&
-                !duplicateError && (
-                  <label className="ocr-confirm-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={ocrConfirmed}
-                      onChange={(e) => setOcrConfirmed(e.target.checked)}
-                    />
-                    <span>
-                      I confirm the AI-extracted reference{' '}
-                      <strong>{ocrData.ref_number}</strong>
-                      {ocrData.beneficiary_name && (
-                        <>
-                          {' '}
-                          and beneficiary{' '}
-                          <strong>{ocrData.beneficiary_name}</strong>
-                        </>
-                      )}{' '}
-                      are correct.
-                    </span>
-                  </label>
-                )}
 
               {/* Bank & Reference Row */}
               <div className="slip-meta-inputs-grid">
