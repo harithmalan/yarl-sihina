@@ -13,6 +13,66 @@
 }
 
 /* --------------------------------------------------------------------------
+   0. Global Site Loader Overlay
+   -------------------------------------------------------------------------- */
+.site-loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background-color: var(--palette-dark-slate);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
+}
+
+.site-loader-overlay.fade-out {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.site-loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: pulseLogo 2s infinite ease-in-out;
+}
+
+.site-loader-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(211, 195, 185, 0.2);
+}
+
+.site-loader-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #fff;
+  margin: 0;
+}
+
+.site-loader-subtitle {
+  font-family: 'Kavivanar', 'Arima', cursive, serif;
+  font-size: 1.1rem;
+  color: var(--palette-caramel);
+}
+
+@keyframes pulseLogo {
+  0% { transform: scale(0.98); opacity: 0.8; }
+  50% { transform: scale(1.02); opacity: 1; }
+  100% { transform: scale(0.98); opacity: 0.8; }
+}
+
+/* --------------------------------------------------------------------------
    1. Site Header Wrapper (Hidden on initial view, smoothly slides in on scroll)
    -------------------------------------------------------------------------- */
 .site-header-wrapper {

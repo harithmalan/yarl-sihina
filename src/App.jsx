@@ -64,6 +64,16 @@ function StorefrontApp() {
   const [announcementIdx, setAnnouncementIdx] = useState(0);
   const [isHeaderVisible, setIsHeaderVisible] = useState(false);
   const [productsList, setProductsList] = useState(() => productService.getProducts());
+  const [isSiteLoaded, setIsSiteLoaded] = useState(false);
+
+  // Handle global site loader
+  useEffect(() => {
+    // Artificial delay to show the beautiful loader, or wait for window.onload
+    const timer = setTimeout(() => {
+      setIsSiteLoaded(true);
+    }, 1800);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Listen to product updates (add/delete from admin)
   useEffect(() => {
@@ -204,6 +214,15 @@ function StorefrontApp() {
 
   return (
     <div className="joey-storefront-wrapper">
+      {/* 0. Global Site Loader Overlay */}
+      <div className={`site-loader-overlay ${isSiteLoaded ? 'fade-out' : ''}`}>
+        <div className="site-loader-content">
+          <img src="/img/logo.png" alt="YARL SIHINA Loading" className="site-loader-logo" />
+          <h1 className="site-loader-title">YARL SIHINA</h1>
+          <span className="site-loader-subtitle">யாழ் சிஹினா</span>
+        </div>
+      </div>
+
       {/* Top Header Wrapper (Hidden on first look, slides in on scroll) */}
       <div className={`site-header-wrapper ${showHeader ? 'visible' : 'hidden'}`}>
         {/* 1. Top Announcement Bar */}
