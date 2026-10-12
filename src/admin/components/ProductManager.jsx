@@ -60,7 +60,7 @@ export default function ProductManager() {
   useEffect(() => {
     let alive = true;
     const refreshProducts = async () => {
-      const updatedList = await productService.loadProducts({ includeInactive: true });
+      const updatedList = await productService.loadProducts({ includeInactive: true, admin: true });
       if (alive) setProducts(updatedList.filter(product => product.isActive !== false));
     };
 

@@ -1,5 +1,6 @@
 import { products as defaultProducts } from '../data';
 import { supabase, isSupabaseConfigured } from './supabaseClient';
+import { adminApi, isAdminApiAvailable } from './adminApi';
 
 const STORAGE_KEY = 'yarl_catalog_products';
 const STOCK_KEY = 'yarl_inventory_stock';
@@ -68,7 +69,18 @@ class ProductService {
   /**
    * Fetch the shared production catalog. Falls back to local/demo data offline.
    */
-  async loadProducts({ includeInactive = false } = {}) {
+  async loadProducts({ includeInactive = false, admin = false } = {}) {
+    if (admin && isAdminApiAvailable()) {
+      try {
+        const data = await adminApi('products');
+        const mapped = (data || []).map(toAppProduct);
+        this._persist(mapped.filter(product => product.isActive !== false));
+        return includeInactive ? mapped : mapped.filter(product => product.isActive !== false);
+      } catch (err) {
+        console.warn('Admin product fetch failed, using public/local catalog:', err);
+      }
+    }
+
     if (isSupabaseConfigured && supabase) {
       try {
         let query = supabase
@@ -118,7 +130,9 @@ class ProductService {
       createdAt: new Date().toISOString()
     };
 
-    if (isSupabaseConfigured && supabase) {
+    if (isAdminApiAvailable()) {
+      await adminApi('save-product', { method: 'POST', body: { product: newProduct } });
+    } else if (isSupabaseConfigured && supabase) {
       const { error } = await supabase.from('products').upsert([toDbProduct(newProduct)]);
       if (error) throw error;
     }
@@ -167,7 +181,9 @@ class ProductService {
       originalPrice: Number(updates.originalPrice ?? products[index].originalPrice)
     };
 
-    if (isSupabaseConfigured && supabase) {
+    if (isAdminApiAvailable()) {
+      await adminApi('save-product', { method: 'POST', body: { product: products[index] } });
+    } else if (isSupabaseConfigured && supabase) {
       const { error } = await supabase.from('products').update(toDbProduct(products[index])).eq('id', id);
       if (error) throw error;
     }
@@ -184,7 +200,9 @@ class ProductService {
     const products = this.getProducts();
     const updated = products.filter(p => p.id !== id);
 
-    if (isSupabaseConfigured && supabase) {
+    if (isAdminApiAvailable()) {
+      await adminApi('delete-product', { method: 'POST', body: { id } });
+    } else if (isSupabaseConfigured && supabase) {
       const { error } = await supabase.from('products').update({ is_active: false }).eq('id', id);
       if (error) throw error;
     }
@@ -209,7 +227,9 @@ class ProductService {
    * Reset catalog back to initial Ceylon collection
    */
   async resetToDefaults() {
-    if (isSupabaseConfigured && supabase) {
+    if (isAdminApiAvailable()) {
+      await adminApi('reset-products', { method: 'POST', body: { products: defaultProducts } });
+    } else if (isSupabaseConfigured && supabase) {
       const { error } = await supabase
         .from('products')
         .upsert(defaultProducts.map(product => toDbProduct({ ...product, isActive: true })));

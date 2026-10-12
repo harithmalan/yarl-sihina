@@ -1,4 +1,5 @@
 import { supabase, isSupabaseConfigured } from './supabaseClient';
+import { adminApi, isAdminApiAvailable } from './adminApi';
 
 const INITIAL_SEED_ORDERS = [
   {
@@ -128,6 +129,14 @@ const saveLocalOrders = (orders) => {
 export const orderService = {
   // Fetch all orders
   async getOrders({ scope = 'admin', user = null } = {}) {
+    if (scope === 'admin' && isAdminApiAvailable()) {
+      try {
+        return await adminApi('orders');
+      } catch (err) {
+        console.warn('Admin order fetch failed, falling back to Supabase/local store:', err);
+      }
+    }
+
     if (isSupabaseConfigured && supabase) {
       let query = supabase
         .from('orders')
@@ -229,12 +238,17 @@ export const orderService = {
 
     if (isSupabaseConfigured && supabase) {
       try {
-        const { data, error } = await supabase
-          .from('orders')
-          .update(patch)
-          .eq('id', orderId)
-          .select();
-        if (!error && data?.[0]) return data[0];
+        if (isAdminApiAvailable()) {
+          const data = await adminApi('update-order', { method: 'POST', body: { id: orderId, patch } });
+          if (data) return data;
+        } else {
+          const { data, error } = await supabase
+            .from('orders')
+            .update(patch)
+            .eq('id', orderId)
+            .select();
+          if (!error && data?.[0]) return data[0];
+        }
       } catch (err) {
         console.warn('Supabase update failed, updating local store:', err);
       }
@@ -256,12 +270,17 @@ export const orderService = {
 
     if (isSupabaseConfigured && supabase) {
       try {
-        const { data, error } = await supabase
-          .from('orders')
-          .update(patch)
-          .eq('id', orderId)
-          .select();
-        if (!error && data?.[0]) return data[0];
+        if (isAdminApiAvailable()) {
+          const data = await adminApi('update-order', { method: 'POST', body: { id: orderId, patch } });
+          if (data) return data;
+        } else {
+          const { data, error } = await supabase
+            .from('orders')
+            .update(patch)
+            .eq('id', orderId)
+            .select();
+          if (!error && data?.[0]) return data[0];
+        }
       } catch (err) {
         console.warn('Supabase shipping update failed:', err);
       }

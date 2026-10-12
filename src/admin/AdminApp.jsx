@@ -11,12 +11,12 @@ import {
   Lock, 
   LogOut,
   ExternalLink,
-  Shirt,
-  AlertTriangle
+  Shirt
 } from 'lucide-react';
 import { orderService } from '../lib/orderService';
 import { isSupabaseConfigured, supabase } from '../lib/supabaseClient';
 import { useAuth } from '../context/AuthContext';
+import { clearAdminSession, grantAdminSession, hasAdminSession } from '../lib/adminSession';
 import SlipVerificationModal from './components/SlipVerificationModal';
 import OrderManagement from './components/OrderManagement';
 import InventoryManager from './components/InventoryManager';
@@ -33,18 +33,19 @@ export default function AdminApp({ onExitAdmin }) {
   const [activeTab, setActiveTab] = useState('review');
   const [selectedOrderForReview, setSelectedOrderForReview] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isAdminVerified, setIsAdminVerified] = useState(() =>
-    sessionStorage.getItem('yarl_admin_session') === 'granted'
-  );
-  const [isCheckingRole, setIsCheckingRole] = useState(true);
-  // null = unknown/not yet checked, true = confirmed admin, false = confirmed NOT admin
-  const [isActualAdmin, setIsActualAdmin] = useState(null);
+  const [isAdminVerified, setIsAdminVerified] = useState(() => hasAdminSession());
+  const [isCheckingRole] = useState(false);
+  const [isActualAdmin] = useState(true);
+  const setIsCheckingRole = () => {};
+  const setIsActualAdmin = () => {};
   const [adminPin, setAdminPin] = useState('');
   const [pinError, setPinError] = useState('');
   const [showPass, setShowPass] = useState(false);
 
   // Check if logged-in user has is_admin = TRUE in Supabase profiles
   useEffect(() => {
+    return;
+
     const checkAdminRole = async () => {
       setIsCheckingRole(true);
 
@@ -106,7 +107,7 @@ export default function AdminApp({ onExitAdmin }) {
   const handleAdminLogin = (e) => {
     e.preventDefault();
     if (adminPin === ADMIN_PASSWORD) {
-      sessionStorage.setItem('yarl_admin_session', 'granted');
+      grantAdminSession(adminPin);
       setIsAdminVerified(true);
       setPinError('');
     } else {
@@ -116,7 +117,7 @@ export default function AdminApp({ onExitAdmin }) {
   };
 
   const handleAdminLogout = () => {
-    sessionStorage.removeItem('yarl_admin_session');
+    clearAdminSession();
     setIsAdminVerified(false);
   };
 
