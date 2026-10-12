@@ -2147,3 +2147,160 @@
     display: none;
   }
 }
+
+/* -------------------------------------------------------------
+   Glass Morph Production Polish
+---------------------------------------------------------------- */
+.admin-app-root,
+.admin-login-screen {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(181, 136, 99, 0.18), transparent 32%),
+    radial-gradient(circle at 88% 12%, rgba(52, 152, 219, 0.12), transparent 30%),
+    linear-gradient(135deg, #0b1116 0%, #111d24 46%, #0a1014 100%);
+}
+
+.admin-app-root {
+  --admin-card-bg: rgba(22, 35, 42, 0.58);
+  --admin-card-inner: rgba(255, 255, 255, 0.07);
+  --admin-border: rgba(255, 255, 255, 0.14);
+  --admin-glass-highlight: rgba(255, 255, 255, 0.18);
+}
+
+.admin-header,
+.admin-table-container,
+.orders-status-tabs,
+.admin-modal-container,
+.admin-login-card,
+.inventory-card,
+.analytics-box,
+.kpi-card,
+.product-admin-card,
+.product-empty-state,
+.summary-stat-pill,
+.hero-quick-counter,
+.admin-card-inner,
+.shipping-summary-box,
+.delete-product-preview,
+.admin-input-text,
+.admin-select,
+.admin-textarea,
+.orders-search-input,
+.admin-btn-secondary,
+.admin-storefront-btn,
+.admin-icon-btn {
+  background: var(--admin-card-bg);
+  border-color: var(--admin-border);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow:
+    inset 0 1px 0 var(--admin-glass-highlight),
+    0 18px 45px rgba(0, 0, 0, 0.22);
+}
+
+.admin-header {
+  background: rgba(12, 20, 26, 0.72);
+}
+
+.admin-main-container {
+  max-width: 1480px;
+}
+
+.admin-page-hero,
+.inventory-header-bar {
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid var(--admin-border);
+  border-radius: 8px;
+  padding: 18px;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.admin-nav-item.active,
+.order-tab-btn.active {
+  background: rgba(181, 136, 99, 0.2);
+  border-color: rgba(181, 136, 99, 0.36);
+}
+
+.admin-orders-table th {
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.admin-order-row:hover,
+.product-admin-card:hover,
+.kpi-card:hover,
+.inventory-card:hover {
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.admin-modal-backdrop {
+  background: rgba(5, 8, 11, 0.58);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.admin-modal-container {
+  background: rgba(14, 24, 31, 0.82);
+}
+
+.admin-btn,
+.action-btn-primary,
+.action-btn-dispatch,
+.action-btn-delivered,
+.product-btn-edit,
+.product-btn-delete,
+.mini-review-btn,
+.image-upload-label,
+.chip-btn,
+.preset-thumb-btn,
+.order-card-receipt-btn {
+  border-radius: 8px;
+}
+
+.approve-btn,
+.action-btn-primary,
+.mini-review-btn {
+  background: linear-gradient(135deg, #b58863, #d2a171);
+  box-shadow: 0 12px 26px rgba(181, 136, 99, 0.26);
+}
+
+.approve-btn:hover,
+.action-btn-primary:hover,
+.mini-review-btn:hover {
+  background: linear-gradient(135deg, #c7966c, #e0b07f);
+}
+
+.product-card-visual,
+.slip-image-stage,
+.product-image-preview-box,
+.preset-thumb-btn,
+.inv-product-thumb {
+  background: rgba(3, 7, 10, 0.42);
+  border-color: var(--admin-border);
+}
+
+@media (max-width: 720px) {
+  .admin-page-hero {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .orders-search-wrapper {
+    min-width: 100%;
+  }
+
+  .product-hero-actions,
+  .delete-actions-row,
+  .product-form-actions {
+    width: 100%;
+    flex-direction: column;
+    display: flex;
+  }
+
+  .admin-btn,
+  .admin-btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -127,19 +127,46 @@ const saveLocalOrders = (orders) => {
 
 export const orderService = {
   // Fetch all orders
-  async getOrders() {
+  async getOrders({ scope = 'admin', user = null } = {}) {
     if (isSupabaseConfigured && supabase) {
-      const { data, error } = await supabase
+      let query = supabase
         .from('orders')
         .select('*')
         .order('created_at', { ascending: false });
+
+      if (scope === 'customer') {
+        if (user?.id) {
+          query = query.eq('customer_id', user.id);
+        } else if (user?.email) {
+          query = query.eq('customer_email', user.email);
+        } else {
+          return [];
+        }
+      }
+
+      const { data, error } = await query;
       if (error) {
         console.warn('Supabase fetch failed, falling back to local store:', error);
-        return getLocalOrders();
+        const local = getLocalOrders();
+        if (scope === 'customer') {
+          return local.filter(o =>
+            (user?.id && o.customer_id === user.id) ||
+            (user?.email && o.customer_email === user.email)
+          );
+        }
+        return local;
       }
-      return data && data.length > 0 ? data : getLocalOrders();
+      return data || [];
     }
-    return getLocalOrders();
+
+    const local = getLocalOrders();
+    if (scope === 'customer') {
+      return local.filter(o =>
+        (user?.id && o.customer_id === user.id) ||
+        (user?.email && o.customer_email === user.email)
+      );
+    }
+    return local;
   },
 
   // Create new order with slip
@@ -166,7 +193,7 @@ export const orderService = {
       }
     }
 
-    const orderId = 'YS-' + Math.floor(1000 + Math.random() * 9000);
+    const orderId = orderPayload.id || 'YS-' + Math.floor(1000 + Math.random() * 9000);
     const newOrder = {
       ...orderPayload,
       id: orderId,

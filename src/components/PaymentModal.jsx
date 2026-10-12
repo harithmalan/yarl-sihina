@@ -174,6 +174,7 @@ export default function PaymentModal({ isOpen, onClose, orderData, onOrderComple
 
       const orderPayload = {
         id: ref || 'YS-' + Math.floor(1000 + Math.random() * 9000),
+        customer_id: customer.id || null,
         customer_name: customer.name,
         customer_phone: customer.phone,
         customer_email: customer.email || '',

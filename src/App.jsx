@@ -79,10 +79,26 @@ function StorefrontApp() {
 
   // Listen to product updates (add/delete from admin)
   useEffect(() => {
-    const unsubscribe = productService.subscribe(updated => {
-      setProductsList(updated);
+    let alive = true;
+    productService.loadProducts().then(updated => {
+      if (alive) setProductsList(updated);
     });
-    return unsubscribe;
+    const unsubscribe = productService.subscribe(() => {
+      productService.loadProducts().then(updated => {
+        if (alive) setProductsList(updated);
+      });
+    });
+    const onFocus = () => {
+      productService.loadProducts().then(updated => {
+        if (alive) setProductsList(updated);
+      });
+    };
+    window.addEventListener('focus', onFocus);
+    return () => {
+      alive = false;
+      unsubscribe();
+      window.removeEventListener('focus', onFocus);
+    };
   }, []);
 
   // Sync hash routing
@@ -181,6 +197,7 @@ function StorefrontApp() {
       ref: orderRef,
       customer: {
         ...customerData,
+        id: user?.id || null,
         name: customerData.name || user?.name || '',
         email: customerData.email || user?.email || ''
       },

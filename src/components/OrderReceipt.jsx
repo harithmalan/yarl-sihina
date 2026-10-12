@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { X, Download, Image, FileText, ShieldCheck, MapPin, Phone, Mail, Package } from 'lucide-react';
 
 // Format date nicely
@@ -11,12 +11,11 @@ const fmt = (iso) => {
 
 export default function OrderReceipt({ order, onClose }) {
   const receiptRef = useRef(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   if (!order) return null;
 
   const items = Array.isArray(order.items) ? order.items : [];
-
-  const [isGenerating, setIsGenerating] = React.useState(false);
 
   // Helper: clone receipt into hidden full-height container and capture it
   const captureFullReceipt = async () => {

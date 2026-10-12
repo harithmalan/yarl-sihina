@@ -11,7 +11,8 @@ import {
   ExternalLink,
   ChevronRight,
   PackageCheck,
-  Send
+  Send,
+  X
 } from 'lucide-react';
 
 export default function OrderManagement({ orders, onSelectOrderForReview, onUpdateShipping }) {

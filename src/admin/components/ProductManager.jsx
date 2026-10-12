@@ -58,10 +58,18 @@ export default function ProductManager() {
 
   // Listen to product updates
   useEffect(() => {
-    const unsubscribe = productService.subscribe(updatedList => {
-      setProducts(updatedList);
-    });
-    return unsubscribe;
+    let alive = true;
+    const refreshProducts = async () => {
+      const updatedList = await productService.loadProducts({ includeInactive: true });
+      if (alive) setProducts(updatedList.filter(product => product.isActive !== false));
+    };
+
+    refreshProducts();
+    const unsubscribe = productService.subscribe(refreshProducts);
+    return () => {
+      alive = false;
+      unsubscribe();
+    };
   }, []);
 
   const showToast = (msg) => {
@@ -166,8 +174,9 @@ export default function ProductManager() {
 
   const handleResetDefaults = () => {
     if (window.confirm('Reset all catalog products back to the original YARL SIHINA Ceylon collection?')) {
-      productService.resetToDefaults();
-      showToast('✓ Restored default product catalog.');
+      productService.resetToDefaults()
+        .then(() => showToast('Restored default product catalog.'))
+        .catch(err => alert('Error resetting catalog: ' + err.message));
     }
   };
 

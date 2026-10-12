@@ -5,6 +5,42 @@ const STORAGE_KEY = 'yarl_catalog_products';
 const STOCK_KEY = 'yarl_inventory_stock';
 const EVENT_NAME = 'yarl_products_updated';
 
+const toAppProduct = (row) => {
+  const image = row.image || row.images?.[0] || '/img/product-1-male.jpeg';
+  return {
+    id: row.id,
+    name: row.name,
+    type: row.type || (row.is_couple ? 'Couple Package' : (row.category === 'crop' ? 'Crop Top' : 'T-Shirt')),
+    category: row.category,
+    badge: row.badge || '',
+    price: Number(row.price || 0),
+    originalPrice: row.original_price ? Number(row.original_price) : undefined,
+    desc: row.description || '',
+    image,
+    images: Array.isArray(row.images) && row.images.length ? row.images : [image],
+    isCouple: row.is_couple === true,
+    totalItemsCount: Number(row.total_items_count || (row.is_couple ? 2 : 1)),
+    createdAt: row.created_at,
+    isActive: row.is_active !== false
+  };
+};
+
+const toDbProduct = (product) => ({
+  id: product.id,
+  name: product.name,
+  category: product.category,
+  type: product.type,
+  badge: product.badge,
+  price: product.price,
+  original_price: product.originalPrice,
+  description: product.desc,
+  image: product.image,
+  images: product.images || [product.image],
+  is_couple: product.isCouple,
+  total_items_count: product.totalItemsCount,
+  is_active: product.isActive !== false
+});
+
 class ProductService {
   /**
    * Fetch all active products from storage or defaults
@@ -30,6 +66,36 @@ class ProductService {
   }
 
   /**
+   * Fetch the shared production catalog. Falls back to local/demo data offline.
+   */
+  async loadProducts({ includeInactive = false } = {}) {
+    if (isSupabaseConfigured && supabase) {
+      try {
+        let query = supabase
+          .from('products')
+          .select('*')
+          .order('sort_order', { ascending: true })
+          .order('created_at', { ascending: false });
+
+        if (!includeInactive) query = query.eq('is_active', true);
+
+        const { data, error } = await query;
+        if (error) throw error;
+
+        const mapped = (data || []).map(toAppProduct);
+        if (mapped.length > 0) {
+          this._persist(mapped);
+          return mapped;
+        }
+      } catch (err) {
+        console.warn('Supabase product fetch failed, using local catalog:', err);
+      }
+    }
+
+    return this.getProducts();
+  }
+
+  /**
    * Add a new product to the catalog
    */
   async addProduct(data) {
@@ -52,7 +118,12 @@ class ProductService {
       createdAt: new Date().toISOString()
     };
 
-    const updated = [newProduct, ...products];
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase.from('products').upsert([toDbProduct(newProduct)]);
+      if (error) throw error;
+    }
+
+    const updated = [newProduct, ...products.filter(product => product.id !== newProduct.id)];
     this._persist(updated);
 
     // Initialize inventory stock for this new product
@@ -69,24 +140,6 @@ class ProductService {
       };
       localStorage.setItem(STOCK_KEY, JSON.stringify(stock));
     } catch {}
-
-    // Optional Supabase sync
-    if (isSupabaseConfigured) {
-      try {
-        await supabase.from('products').upsert([{
-          id: newProduct.id,
-          name: newProduct.name,
-          category: newProduct.category,
-          price: newProduct.price,
-          original_price: newProduct.originalPrice,
-          badge: newProduct.badge,
-          images: [newProduct.image],
-          is_couple: newProduct.isCouple
-        }]);
-      } catch (err) {
-        console.warn('Supabase product sync warning:', err);
-      }
-    }
 
     this._notify();
     return newProduct;
@@ -114,22 +167,12 @@ class ProductService {
       originalPrice: Number(updates.originalPrice ?? products[index].originalPrice)
     };
 
-    this._persist(products);
-
-    if (isSupabaseConfigured) {
-      try {
-        await supabase.from('products').update({
-          name: products[index].name,
-          category: products[index].category,
-          price: products[index].price,
-          original_price: products[index].originalPrice,
-          badge: products[index].badge
-        }).eq('id', id);
-      } catch (err) {
-        console.warn('Supabase product update error:', err);
-      }
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase.from('products').update(toDbProduct(products[index])).eq('id', id);
+      if (error) throw error;
     }
 
+    this._persist(products);
     this._notify();
     return products[index];
   }
@@ -140,6 +183,12 @@ class ProductService {
   async deleteProduct(id) {
     const products = this.getProducts();
     const updated = products.filter(p => p.id !== id);
+
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase.from('products').update({ is_active: false }).eq('id', id);
+      if (error) throw error;
+    }
+
     this._persist(updated);
 
     // Clean up inventory stock
@@ -152,15 +201,6 @@ class ProductService {
       }
     } catch {}
 
-    // Optional Supabase sync
-    if (isSupabaseConfigured) {
-      try {
-        await supabase.from('products').delete().eq('id', id);
-      } catch (err) {
-        console.warn('Supabase product delete warning:', err);
-      }
-    }
-
     this._notify();
     return true;
   }
@@ -168,7 +208,13 @@ class ProductService {
   /**
    * Reset catalog back to initial Ceylon collection
    */
-  resetToDefaults() {
+  async resetToDefaults() {
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase
+        .from('products')
+        .upsert(defaultProducts.map(product => toDbProduct({ ...product, isActive: true })));
+      if (error) throw error;
+    }
     this._persist(defaultProducts);
     this._notify();
     return defaultProducts;

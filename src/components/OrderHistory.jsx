@@ -29,12 +29,7 @@ export default function OrderHistory({ user, onClose }) {
   useEffect(() => {
     const loadOrders = async () => {
       setLoading(true);
-      const all = await orderService.getOrders();
-      // Filter: only show this customer's orders (match by email or customer_id)
-      const mine = all.filter(o =>
-        (user?.id && o.customer_id === user.id) ||
-        (user?.email && o.customer_email === user.email)
-      );
+      const mine = await orderService.getOrders({ scope: 'customer', user });
       setOrders(mine.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)));
       setLoading(false);
     };
