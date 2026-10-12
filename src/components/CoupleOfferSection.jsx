@@ -213,7 +213,7 @@ export default function CoupleOfferSection({ coupleProduct, onAddToCart }) {
             {justAdded ? (
               <>
                 <Check size={20} />
-                <span>Added to Bag! Unlocking Drawer...</span>
+                <span>Added to Bag!</span>
               </>
             ) : (
               <>

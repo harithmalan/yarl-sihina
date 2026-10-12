@@ -152,8 +152,6 @@ function StorefrontApp() {
       }
       return [...prev, { ...product, selectedSize, qty: 1, cartId: `${product.id}-${Date.now()}-${Math.random()}` }];
     });
-
-    setIsCartOpen(true);
   };
 
   const handleUpdateQty = (cartId, delta) => {
@@ -691,7 +689,7 @@ function StorefrontApp() {
         </div>
       </footer>
 
-      {/* 8. Slide Shopping Bag Drawer (Opens ONLY when clicking Bag icon or adding items) */}
+      {/* 8. Slide Shopping Bag Drawer (Opens when clicking Bag icon) */}
       <CartDrawer 
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
