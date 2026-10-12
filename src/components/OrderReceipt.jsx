@@ -342,7 +342,7 @@ export default function OrderReceipt({ order, onClose }) {
             <div className="receipt-footer-brand">YARL SIHINA · யாழ் சிஹினா</div>
             <div className="receipt-footer-text">
               Thank you for choosing YARL SIHINA.<br />
-              For support: WhatsApp +94 712 599 185 · yarl.sihina.shop
+              For support: WhatsApp 0781406959 · yarl.sihina.shop
             </div>
             <div className="receipt-footer-note">
               This is a digital order receipt. Keep this for your records.

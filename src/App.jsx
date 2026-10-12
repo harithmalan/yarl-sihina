@@ -629,11 +629,14 @@ function StorefrontApp() {
             <p className="footer-desc">
               Ceylon Heritage Streetwear. Merging cultural memory with elevated urban essentials across Sri Lanka.
             </p>
+            <p className="footer-desc">
+              WhatsApp: <a href="https://wa.me/94781406959" target="_blank" rel="noreferrer">0781406959</a>
+            </p>
             <div className="footer-social-links">
               <a href="https://web.facebook.com/YarlSihina" target="_blank" rel="noreferrer" aria-label="Facebook">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
               </a>
-              <a href="https://wa.me/94712599185" target="_blank" rel="noreferrer" aria-label="WhatsApp">
+              <a href="https://wa.me/94781406959" target="_blank" rel="noreferrer" aria-label="WhatsApp">
                 <MessageCircle size={18} />
               </a>
             </div>
@@ -657,7 +660,7 @@ function StorefrontApp() {
               <li><a href="#heritageStory">About Our Brand</a></li>
               <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Orders are dispatched within 2-3 weeks across Sri Lanka with advance confirmation."); }}>Shipping & Dispatch</a></li>
               <li><a href="#" onClick={(e) => { e.preventDefault(); alert("Advance of LKR 500/piece is required to reserve your handcrafted order."); }}>Advance Policy</a></li>
-              <li><a href="https://wa.me/94712599185" target="_blank" rel="noreferrer">WhatsApp Support (+94 71 259 9185)</a></li>
+              <li><a href="https://wa.me/94781406959" target="_blank" rel="noreferrer">WhatsApp Support (0781406959)</a></li>
             </ul>
           </div>
 

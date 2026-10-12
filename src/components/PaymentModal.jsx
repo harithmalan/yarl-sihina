@@ -3,7 +3,6 @@ import {
   X,
   ShieldCheck,
   CheckCircle2,
-  MessageCircle,
   UploadCloud,
   AlertCircle,
   Brain,
@@ -217,16 +216,6 @@ export default function PaymentModal({ isOpen, onClose, orderData, onOrderComple
     }
   };
 
-  const sendToWhatsApp = () => {
-    let msg = `*🎨 YARL SIHINA ORDER CONFIRMATION*%0A`;
-    msg += `*Order Ref:* #${ref}%0A`;
-    msg += `*Customer:* ${customer.name} (${customer.phone})%0A`;
-    msg += `*Total:* LKR ${math.grandTotal.toLocaleString()}%0A`;
-    msg += `*Advance Required:* LKR ${math.requiredAdvance.toLocaleString()}%0A`;
-    msg += `Hello! I have placed order #${ref} on Yarl Sihina and am transferring the advance.`;
-    window.open(`https://wa.me/94712599185?text=${msg}`, '_blank');
-  };
-
   // ── Render ───────────────────────────────────────────────────────────────
   return (
     <div className="payment-modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
@@ -407,14 +396,6 @@ export default function PaymentModal({ isOpen, onClose, orderData, onOrderComple
                   </span>
                 </button>
 
-                <button
-                  type="button"
-                  className="btn-modal-whatsapp"
-                  onClick={sendToWhatsApp}
-                >
-                  <MessageCircle size={18} />
-                  <span>Send via WhatsApp Instead</span>
-                </button>
               </div>
             </form>
           </>
@@ -436,16 +417,6 @@ export default function PaymentModal({ isOpen, onClose, orderData, onOrderComple
             </p>
 
             <div className="success-action-box">
-              <button
-                className="btn-modal-submit-slip"
-                onClick={() => {
-                  const msg = `Hello YARL SIHINA! 🎨%0AMy order *#${submittedOrder.id}* slip has been uploaded. Please confirm receipt. Thank you!`;
-                  window.open(`https://wa.me/94712599185?text=${msg}`, '_blank');
-                }}
-              >
-                <MessageCircle size={16} />
-                <span>Send WhatsApp Confirmation</span>
-              </button>
 
               <button className="btn-modal-cancel" onClick={onClose}>
                 Done &amp; Return to Store
